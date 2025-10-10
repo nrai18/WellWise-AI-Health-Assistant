@@ -22,14 +22,12 @@ export default function Footer() {
   return (
     <footer className="bg-white">
       <div className="mx-auto w-full max-w-screen-xl px-0 py-0 flex flex-col md:flex-row items-center justify-between">
-        {/* Left Side — Logo */}
         <Link to="/" className="flex items-center mt-3 mb-4 md:mb-0">
           <img src={icon} alt="Logo" className="h-24 sm:h-28 md:h-32 mr-4" />
         </Link>
 
-        {/* Right Side — GitHub Link */}
         <a
-          href=""
+          href="https://github.com/Raghav-Code-dt/Well-Wise-Healthcare"
           className="flex items-center space-x-2 text-green-700 font-semibold text-lg hover:text-green-900 transition duration-150"
           target="_blank"
           rel="noreferrer"

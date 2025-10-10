@@ -11,6 +11,7 @@ import {
 
 import Layout from "./Layout.jsx";
 import Home from "./components/Home/Home.jsx";
+import { FormProvider } from './context/FormContext.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,6 +23,8 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <FormProvider>
+      <RouterProvider router={router} />
+    </FormProvider>
   </StrictMode>,
 )
