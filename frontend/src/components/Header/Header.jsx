@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
+import icon from "../../assets/Images/icon.png";
+import { Menu, X } from "lucide-react";
 
 export default function Header(){
     const [isOpen, setIsOpen] = useState(false);
