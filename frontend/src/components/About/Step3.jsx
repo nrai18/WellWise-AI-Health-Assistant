@@ -65,6 +65,7 @@ export default function Step3() {
       "Diet Type": finalDietType,
       "Diet Quality": dietQuality,
     });
+    navigate("/About/step4");
   };
 
   return (
