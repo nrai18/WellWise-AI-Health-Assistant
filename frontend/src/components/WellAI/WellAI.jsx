@@ -12,7 +12,6 @@ export default function WellAI() {
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
-  
 
   useEffect(() => {
     const container = messagesContainerRef.current;
@@ -20,15 +19,12 @@ export default function WellAI() {
 
     requestAnimationFrame(() => {
       if (messages.length === 0) {
-        // when cleared, make sure it stays at top
         container.scrollTop = 0;
       } else {
-        // scroll to bottom of messages container only
         container.scrollTop = container.scrollHeight;
       }
     });
   }, [messages]);
-
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -39,11 +35,14 @@ export default function WellAI() {
     setLoading(true);
 
     try {
-      const res = await fetch("https://nicholas-unmilitarised-matteo.ngrok-free.dev/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
-      });
+      const res = await fetch(
+        "https://nicholas-unmilitarised-matteo.ngrok-free.dev/chat",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: input }),
+        }
+      );
 
       const data = await res.json();
       const botMsg = {
@@ -74,11 +73,7 @@ export default function WellAI() {
     <div className="chat-wrapper">
       <div className="chat-box">
         <div className="chat-header">
-          <img
-            src={icon}
-            alt="bot"
-            className="bot-logo"
-          />
+          <img src={icon} alt="bot" className="bot-logo" />
           <h1 className="chat-title">Well AI</h1>
         </div>
 
@@ -90,7 +85,7 @@ export default function WellAI() {
                 msg.sender === "user" ? "user-row" : "bot-row"
               }`}
             >
-<<<<<<< Updated upstream
+              {/* Bot avatar */}
               {msg.sender === "bot" && (
                 <img
                   src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
@@ -98,11 +93,33 @@ export default function WellAI() {
                   className="avatar"
                 />
               )}
+
+              {/* Message content */}
               <div className={`message ${msg.sender}`}>
                 {msg.sender === "bot" ? (
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     rehypePlugins={[rehypeHighlight]}
+                    components={{
+                      a: (props) => (
+                        <a
+                          {...props}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="markdown-link"
+                        />
+                      ),
+                      code: ({ inline, className, children, ...props }) => (
+                        <code
+                          className={`${
+                            inline ? "inline-code" : "block-code"
+                          } ${className || ""}`}
+                          {...props}
+                        >
+                          {children}
+                        </code>
+                      ),
+                    }}
                   >
                     {msg.text}
                   </ReactMarkdown>
@@ -110,43 +127,14 @@ export default function WellAI() {
                   msg.text
                 )}
               </div>
+
+              {/* User avatar */}
               {msg.sender === "user" && (
                 <img
                   src="https://cdn-icons-png.flaticon.com/512/1077/1077012.png"
                   alt="user"
                   className="avatar"
                 />
-=======
-              {msg.sender === "bot" ? (
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  rehypePlugins={[rehypeHighlight]}
-                  components={{
-                    a: (props) => (
-                      <a
-                        {...props}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="markdown-link"
-                      />
-                    ),
-                    code: ({ inline, className, children, ...props }) => (
-                      <code
-                        className={`${inline ? "inline-code" : "block-code"} ${
-                          className || ""
-                        }`}
-                        {...props}
-                      >
-                        {children}
-                      </code>
-                    ),
-                  }}
-                >
-                  {msg.text}
-                </ReactMarkdown>
-              ) : (
-                msg.text
->>>>>>> Stashed changes
               )}
             </div>
           ))}
