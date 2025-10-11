@@ -6,9 +6,10 @@ export default function About() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // All form steps
   const steps = [
     "/about/step1",
+    "/about/step2",
+    "/about/step3"
   ];
 
   const stepTitles = [

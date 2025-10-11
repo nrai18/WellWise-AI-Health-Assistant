@@ -47,6 +47,7 @@ export default function Step2() {
     };
     updateFormData(formattedData);
     console.log(formattedData);
+    navigate("/About/step3");
   };
 
   return (

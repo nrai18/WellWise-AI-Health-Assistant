@@ -96,7 +96,6 @@ export default function Step1() {
 
       
       <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700">
-        {/* Age */}
         <div className="group bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
           <label className="block text-emerald-700 font-semibold mb-1">
             Age
