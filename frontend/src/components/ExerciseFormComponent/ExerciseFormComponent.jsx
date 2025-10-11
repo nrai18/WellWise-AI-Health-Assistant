@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 
 // -------------------------------------------------------------------
-// 1. Exercise Context and Provider (No changes needed here)
+// 1. Exercise Context and Provider
 // -------------------------------------------------------------------
 const ExerciseContext = createContext();
 
@@ -20,13 +20,20 @@ export const ExerciseProvider = ({ children }) => {
     timePerSession: 45,
   });
 
+  const [exercisePlan, setExercisePlan] = useState(null);
+
   const updateExerciseFormData = (newData) => {
-    setExerciseFormData((prevData) => ({ ...prevData, ...newData }));
+    setExerciseFormData((prev) => ({ ...prev, ...newData }));
   };
 
   return (
     <ExerciseContext.Provider
-      value={{ exerciseFormData, updateExerciseFormData }}
+      value={{
+        exerciseFormData,
+        updateExerciseFormData,
+        exercisePlan,
+        setExercisePlan,
+      }}
     >
       {children}
     </ExerciseContext.Provider>
@@ -36,10 +43,15 @@ export const ExerciseProvider = ({ children }) => {
 export const useExerciseContext = () => useContext(ExerciseContext);
 
 // -------------------------------------------------------------------
-// 2. The Styled ExerciseFormComponent
+// 2. The ExerciseFormComponent
 // -------------------------------------------------------------------
 export const ExerciseFormComponent = () => {
-  const { exerciseFormData, updateExerciseFormData } = useExerciseContext();
+  const {
+    exerciseFormData,
+    updateExerciseFormData,
+    exercisePlan,
+    setExercisePlan,
+  } = useExerciseContext();
 
   const { handleSubmit, control, watch } = useForm({
     defaultValues: exerciseFormData,
@@ -55,14 +67,33 @@ export const ExerciseFormComponent = () => {
     { name: "fullGym", label: "Full Gym" },
   ];
 
-  const onSubmit = (data) => {
-    console.log("Exercise Form Submitted Data:", data);
+  const onSubmit = async (data) => {
+    console.log("Submitting Exercise Data:", data);
     updateExerciseFormData(data);
-    alert("Check the console for the final exercise form data object!");
+
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:5000/api/get_exercise_plan",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to generate plan");
+
+      const result = await response.json();
+      console.log("Received Plan:", result);
+      setExercisePlan(result);
+    } catch (error) {
+      console.error("Error fetching plan:", error);
+      alert("Something went wrong while generating your workout plan.");
+    }
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen p-4 sm:p-8 flex items-center justify-center font-sans">
+    <div className="bg-gray-50 min-h-screen p-4 sm:p-8 flex flex-col items-center justify-start font-sans">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-emerald-50 via-white to-green-50 p-10 rounded-3xl shadow-xl overflow-hidden mt-10"
@@ -79,7 +110,7 @@ export const ExerciseFormComponent = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700">
             {/* Fitness Level & Primary Goal */}
-            <div className="group bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+            <div className="group bg-white/80 p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
               <label className="block text-emerald-700 font-semibold mb-2">
                 Your Fitness Level
               </label>
@@ -98,7 +129,8 @@ export const ExerciseFormComponent = () => {
                 )}
               />
             </div>
-            <div className="group bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+
+            <div className="group bg-white/80 p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
               <label className="block text-emerald-700 font-semibold mb-2">
                 Primary Goal
               </label>
@@ -119,8 +151,8 @@ export const ExerciseFormComponent = () => {
               />
             </div>
 
-            {/* Available Equipment */}
-            <div className="sm:col-span-2 group bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+            {/* Equipment */}
+            <div className="sm:col-span-2 group bg-white/80 p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
               <label className="block text-emerald-700 font-semibold mb-3">
                 Available Equipment
               </label>
@@ -163,7 +195,7 @@ export const ExerciseFormComponent = () => {
             </div>
 
             {/* Sliders */}
-            <div className="group bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+            <div className="group bg-white/80 p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
               <label className="block text-emerald-700 font-semibold">
                 Workout Days Per Week
               </label>
@@ -185,7 +217,8 @@ export const ExerciseFormComponent = () => {
                 )}
               />
             </div>
-            <div className="group bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+
+            <div className="group bg-white/80 p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
               <label className="block text-emerald-700 font-semibold">
                 Time per Session
               </label>
@@ -220,6 +253,38 @@ export const ExerciseFormComponent = () => {
           </div>
         </div>
       </form>
+
+      {/* Display Generated Plan */}
+      {exercisePlan && (
+        <div className="w-full max-w-4xl mt-10 bg-white rounded-3xl shadow-md p-8">
+          <h2 className="text-2xl font-bold text-center text-emerald-700 mb-6">
+            Your Weekly Workout Plan 💪
+          </h2>
+          <div className="space-y-4">
+            {exercisePlan.weeklyPlan?.map((day, index) => (
+              <div
+                key={index}
+                className="p-5 rounded-2xl bg-emerald-50 border border-emerald-100"
+              >
+                <h3 className="text-xl font-semibold text-emerald-700">
+                  {day.icon} {day.day}: {day.focus}
+                </h3>
+                <p className="text-sm text-gray-600 mb-2">
+                  Intensity: {day.intensity}
+                </p>
+                <ul className="list-disc list-inside text-gray-700">
+                  {day.exercises.map((ex, i) => (
+                    <li key={i}>
+                      {ex.name} — {ex.sets} sets × {ex.reps} reps ({ex.rest}{" "}
+                      rest)
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

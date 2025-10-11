@@ -1,90 +1,23 @@
-# --- Add these imports at the top of app.py ---
-from flask_mail import Mail, Message
-from itsdangerous import URLSafeTimedSerializer, SignatureExpired
+# --- Imports ---
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import os
 import json
 import logging
-from flask import Flask, request, jsonify
-from flask_cors import CORS
 from dotenv import load_dotenv
 import google.generativeai as genai
 
-# Load environment variables from .env file
+# Load environment variables
 load_dotenv()
 
 # --- Initialize Flask App ---
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'super-secret-key')
 
-app.config['SECRET_KEY'] = 'your-super-secret-key-for-tokens' # Change this to a random string
-app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
-app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-
-mail = Mail(app)
-serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-
-
-# --- Add this NEW API route to generate the login link ---
-@app.route('/api/login', methods=['POST'])
-def login():
-    try:
-        data = request.get_json()
-        email = data.get('email')
-        if not email:
-            return jsonify({"error": "Email is required"}), 400
-
-        # Generate a secure token that expires in 15 minutes
-        token = serializer.dumps(email, salt='email-confirm')
-        
-        # Create the magic link
-        confirm_url = f"http://localhost:5173/verify-login?token={token}"
-        
-        # Create and "send" the email (Mailtrap will catch it)
-        html = f"<h3>Hello from Well Wise!</h3><p>Please click this link to log in: <a href='{confirm_url}'>{confirm_url}</a></p>"
-        msg = Message('Your Well Wise Login Link', sender='noreply@wellwise.com', recipients=[email])
-        msg.html = html
-        mail.send(msg)
-        
-        logging.info(f"Login link sent for {email}. Token: {token}")
-        return jsonify({"message": f"Login link sent to {email}. Please check your Mailtrap inbox."})
-    except Exception as e:
-        logging.error(f"Error in /api/login: {e}")
-        return jsonify({"error": "Failed to send login link."}), 500
-
-
-# --- Add this NEW API route to verify the token ---
-@app.route('/api/verify-token', methods=['POST'])
-def verify_token():
-    try:
-        data = request.get_json()
-        token = data.get('token')
-        
-        # Verify the token and its expiration (15 mins = 900 seconds)
-        email = serializer.loads(token, salt='email-confirm', max_age=900)
-        
-        logging.info(f"Token verified for email: {email}")
-        # In a real app, you would create a session/JWT for the user here.
-        # For now, we'll just confirm success.
-        user = {"email": email, "name": "Test User"} # Dummy user object
-        
-        return jsonify({"message": "Login successful!", "user": user})
-    except SignatureExpired:
-        logging.warning("Expired token received.")
-        return jsonify({"error": "The login link has expired."}), 400
-    except Exception as e:
-        logging.error(f"Error in /api/verify-token: {e}")
-        return jsonify({"error": "Invalid or malformed login link."}), 400
-
-# ... (keep all your other API routes like /api/get_full_plan)
-# ... (keep if __name__ == '__main__': at the bottom)
-
-# --- Configuration ---
-logging.basicConfig(level=logging.INFO)
+# Enable CORS so frontend can call backend
 CORS(app)
 
+# Configure Gemini API
 try:
     GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
     if not GOOGLE_API_KEY:
@@ -93,17 +26,26 @@ try:
 except Exception as e:
     logging.error(f"Failed to configure Gemini API: {e}")
 
-# --- NEW: Advanced Calorie Calculator ---
-def calculate_calories(weight, height, age, gender, activity_level):
-    # Using Mifflin-St Jeor Equation for BMR
-    if gender.lower() == 'male':
-        bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5
-    else: # female
-        bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161
+# --- Helper Functions ---
 
-    # Activity multipliers (maps frontend 0-4 to standard values)
+def calculate_bmi(weight, height):
+    if height == 0: return 0
+    return round(float(weight) / ((float(height)/100) ** 2), 2)
+
+def get_bmi_status(bmi):
+    if bmi < 18.5: return "Underweight"
+    if 18.5 <= bmi < 25: return "Normal"
+    if 25 <= bmi < 30: return "Overweight"
+    return "Obesity"
+
+def calculate_calories(weight, height, age, gender, activity_level):
+    if gender.lower() == 'male':
+        bmr = (10*weight) + (6.25*height) - (5*age) + 5
+    else:
+        bmr = (10*weight) + (6.25*height) - (5*age) - 161
+
     activity_multipliers = [1.2, 1.375, 1.55, 1.725, 1.9]
-    tdee = bmr * activity_multipliers[activity_level] # This is maintenance calories
+    tdee = bmr * activity_multipliers[activity_level]
 
     calories = {
         'maintain': round(tdee),
@@ -111,29 +53,15 @@ def calculate_calories(weight, height, age, gender, activity_level):
         'weightLoss': round(tdee - 500),
         'extremeLoss': round(tdee - 750)
     }
-    
-    # Calculate projected weekly loss (1 kg fat = ~7700 calories)
+
     projections = {
         'maintain': "0 kg/week",
-        'mildLoss': f"~-{(250 * 7) / 7700:.2f} kg/week",
-        'weightLoss': f"~-{(500 * 7) / 7700:.2f} kg/week",
-        'extremeLoss': f"~-{(750 * 7) / 7700:.2f} kg/week"
+        'mildLoss': f"~-{(250*7)/7700:.2f} kg/week",
+        'weightLoss': f"~-{(500*7)/7700:.2f} kg/week",
+        'extremeLoss': f"~-{(750*7)/7700:.2f} kg/week"
     }
 
     return calories, projections
-
-# --- Helper Functions ---
-def get_bmi_status(bmi):
-    if bmi < 18.5: return "Underweight"
-    if 18.5 <= bmi < 25: return "Normal"
-    if 25 <= bmi < 30: return "Overweight"
-    return "Obesity"
-
-def calculate_bmi(weight, height):
-    if height == 0: return 0
-    return round(float(weight) / ((float(height) / 100) ** 2), 2)
-
-# In app.py, replace the old create_diet_prompt function with this one.
 
 def create_diet_prompt(user_inputs, calories):
     meal_names = ["Breakfast", "Lunch", "Dinner"]
@@ -150,58 +78,20 @@ def create_diet_prompt(user_inputs, calories):
           {{
             "mealType": "{meal_name}", 
             "options": [
-              {{ 
-                "name": "A short, common dish name", 
-                "calories": "<Integer>", "protein": "<Number>g", "fat": "<Number>g",
-                "carbs": "<Number>g", "saturatedFat": "<Number>g", "sodium": "<Number>mg",
-                "fiber": "<Number>g", "sugar": "<Number>g",
-                "imageUrl": "A relevant placeholder image URL from 'https://placehold.co/600x400'",
-                "ingredients": ["Ingredient 1", "Ingredient 2", "Ingredient 3"],
-                "instructions": ["Step 1", "Step 2", "Step 3"]
-              }},
-              {{ 
-                "name": "Another short, common dish name", 
-                "calories": "<Integer>", "protein": "<Number>g", "fat": "<Number>g",
-                "carbs": "<Number>g", "saturatedFat": "<Number>g", "sodium": "<Number>mg",
-                "fiber": "<Number>g", "sugar": "<Number>g",
-                "imageUrl": "A relevant placeholder image URL from 'https://placehold.co/600x400'",
-                "ingredients": ["Ingredient A", "Ingredient B", "Ingredient C"],
-                "instructions": ["Step A", "Step B", "Step C"]
-              }},
-              {{ 
-                "name": "A third short, common dish name", 
-                "calories": "<Integer>", "protein": "<Number>g", "fat": "<Number>g",
-                "carbs": "<Number>g", "saturatedFat": "<Number>g", "sodium": "<Number>mg",
-                "fiber": "<Number>g", "sugar": "<Number>g",
-                "imageUrl": "A relevant placeholder image URL from 'https://placehold.co/600x400'",
-                "ingredients": ["Ingredient X", "Ingredient Y", "Ingredient Z"],
-                "instructions": ["Step X", "Step Y", "Step Z"]
-              }}
+              {{ "name": "Dish 1", "calories": 300, "protein": 15, "fat": 10, "carbs": 40, "saturatedFat": 3, "sodium": 500, "fiber": 5, "sugar": 6, "imageUrl": "https://placehold.co/600x400", "ingredients": ["Ingredient1", "Ingredient2"], "instructions": ["Step1", "Step2"] }},
+              {{ "name": "Dish 2", "calories": 350, "protein": 20, "fat": 12, "carbs": 45, "saturatedFat": 4, "sodium": 600, "fiber": 6, "sugar": 7, "imageUrl": "https://placehold.co/600x400", "ingredients": ["IngredientA", "IngredientB"], "instructions": ["StepA", "StepB"] }},
+              {{ "name": "Dish 3", "calories": 400, "protein": 18, "fat": 15, "carbs": 50, "saturatedFat": 5, "sodium": 700, "fiber": 7, "sugar": 8, "imageUrl": "https://placehold.co/600x400", "ingredients": ["IngredientX", "IngredientY"], "instructions": ["StepX", "StepY"] }}
             ]
-          }},"""
+          }},
+        """
     meal_options_prompt = meal_options_prompt.rstrip(',')
 
     prompt = f"""
-    You are an expert AI that creates healthy diet plans based on common, everyday Indian home-style food.
-    The total calories for the day should be around {calories['weightLoss']} kcal.
-    
-    **CRITICAL INSTRUCTIONS:**
-    1. Your entire response MUST be a single, valid JSON object.
-    2. Focus on food that is commonly eaten in Indian homes.
-    3. Recipe names MUST be short and simple (e.g., "Rajma Chawal").
-    4. You MUST provide exactly three distinct recipe options for each mealType.
-
-    **User Data:**
-    - Age: {user_inputs['age']}, Gender: {user_inputs['gender']}, Goal: {user_inputs['weightLossPlan']}
-
-    **JSON Structure to Follow:**
-    {{
-      "mealPlan": [
-          {meal_options_prompt}
-      ]
-    }}
+    You are an AI that creates Indian diet plans. Total calories: {calories['weightLoss']} kcal.
+    Provide JSON in this format: {{ "mealPlan": [ {meal_options_prompt} ] }}
     """
     return prompt
+
 def make_gemini_call(prompt):
     try:
         model = genai.GenerativeModel('gemini-pro-latest')
@@ -210,39 +100,34 @@ def make_gemini_call(prompt):
         return json.loads(response_text)
     except Exception as e:
         logging.error(f"Error calling Gemini or parsing JSON: {e}")
-        raise
+        # fallback dummy response
+        return {"mealPlan": []}
 
-# --- UPDATED: API Route to use new calculators ---
+# --- API Route ---
 @app.route('/api/get_full_plan', methods=['POST'])
 def get_full_plan():
     try:
         data = request.get_json()
-        logging.info(f"Received data for diet plan: {data}")
-        
         user_inputs = {
-            'age': int(data.get('age')), 
+            'age': int(data.get('age')),
             'height': float(data.get('height')),
-            'weight': float(data.get('weight')), 
+            'weight': float(data.get('weight')),
             'gender': data.get('gender'),
             'activityLevel': int(data.get('activityLevel')),
             'weightLossPlan': data.get('weightLossPlan'),
             'mealsPerDay': int(data.get('mealsPerDay'))
         }
-        
-        # 1. Perform all calculations first
+
         bmi_value = calculate_bmi(user_inputs['weight'], user_inputs['height'])
         bmi_status = get_bmi_status(bmi_value)
         calories, projections = calculate_calories(
             user_inputs['weight'], user_inputs['height'], user_inputs['age'], 
             user_inputs['gender'], user_inputs['activityLevel']
         )
-        
-        # 2. Get meal plan from AI
+
         prompt = create_diet_prompt(user_inputs, calories)
-        logging.info("Generating diet plan from Gemini API...")
-        plan_data = make_gemini_call(prompt) # This will return {"mealPlan": [...]}
-        
-        # 3. Combine calculated data with AI data for the final response
+        plan_data = make_gemini_call(prompt)
+
         final_response = {
             "bmi": {"value": bmi_value, "category": bmi_status},
             "calories": {
@@ -253,13 +138,77 @@ def get_full_plan():
             },
             "mealPlan": plan_data.get("mealPlan", [])
         }
-        
-        logging.info("Successfully generated and parsed full plan.")
         return jsonify(final_response)
-        
+
     except Exception as e:
-        logging.error(f"An unexpected error occurred in get_full_plan: {e}")
-        return jsonify({"error": "An unexpected error occurred on the server."}), 500
+        logging.error(f"Error in get_full_plan: {e}")
+        return jsonify({"error": "Server error"}), 500
+    
+# ==============================================================
+# 🏋️ EXERCISE HUB ROUTE (Add below your existing diet code)
+# ==============================================================
+
+@app.route('/api/get_exercise_plan', methods=['POST'])
+def get_exercise_plan():
+    try:
+        data = request.get_json()
+
+        fitness_level = data.get("fitnessLevel", "Beginner")
+        primary_goal = data.get("primaryGoal", "Weight Loss")
+        equipment = data.get("availableEquipment", {})
+        days = int(data.get("workoutDaysPerWeek", 3))
+        time = int(data.get("timePerSession", 45))
+
+        prompt = f"""
+        You are a certified fitness coach.
+        Create a {days}-day structured weekly workout plan based on:
+        - Fitness Level: {fitness_level}
+        - Goal: {primary_goal}
+        - Equipment: {equipment}
+        - Days per week: {days}
+        - Duration per session: {time} minutes
+
+        Each day must include:
+        - day (e.g., Monday)
+        - focus (e.g., Chest & Triceps)
+        - exercises: list of dicts with "name", "sets", "reps", "rest", "equipment"
+        - intensity: Low/Medium/High
+        - icon: short emoji (💪, 🧘, 🏃 etc.)
+
+        Return strictly JSON in this structure:
+        {{
+          "weeklyPlan": [
+            {{
+              "day": "Monday",
+              "focus": "Upper Body",
+              "exercises": [
+                {{
+                  "name": "Push-ups",
+                  "sets": 3,
+                  "reps": 12,
+                  "rest": "60s",
+                  "equipment": "Bodyweight"
+                }}
+              ],
+              "intensity": "Medium",
+              "icon": "💪"
+            }}
+          ]
+        }}
+        """
+
+        plan_data = make_gemini_call(prompt)
+
+        # Ensure fallback structure if Gemini fails
+        if "weeklyPlan" not in plan_data:
+            plan_data = {"weeklyPlan": []}
+
+        return jsonify(plan_data), 200
+
+    except Exception as e:
+        logging.error(f"Error in get_exercise_plan: {e}", exc_info=True)
+        return jsonify({"weeklyPlan": []}), 500
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     app.run(debug=True)
