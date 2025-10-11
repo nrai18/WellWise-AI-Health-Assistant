@@ -11,6 +11,7 @@ export default function Header() {
     { name: "Well Form", path: "/About" },
     { name: "Diet", path: "/Diet" },
     { name: "Exercise", path: "/Exercise" },
+    { name: "Hydration", path: "/Hydration" },
     { name: "WellAi", path: "/WellAI" },
   ];
 
