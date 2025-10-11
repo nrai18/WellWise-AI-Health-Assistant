@@ -42,8 +42,8 @@ export default function FeatureShowcase() {
 
   const featureCards = [
     {
-      text: "Smart Risk Prediction",
-      icon: "⚡",
+      text: "Health, Tailored to You",
+      icon: "🧬",
       style: "top-10 left-0 md:left-20 bg-blue-100 text-blue-800",
     },
     {
@@ -57,13 +57,13 @@ export default function FeatureShowcase() {
       style: "bottom-20 left-0 md:left-10 bg-purple-100 text-purple-800",
     },
     {
-      text: "Check Symptom Checker",
-      icon: "🩺",
+      text: "Live Better, Not Just Longer",
+      icon: "🧘",
       style: "top-20 right-0 md:right-20 bg-yellow-100 text-yellow-800",
     },
     {
-      text: "Medication Interactions",
-      icon: "💊",
+      text: "Personalized Exercise Plans",
+      icon: "🏋️‍♂️",
       style: "bottom-10 right-10 md:right-40 bg-red-100 text-red-800",
     },
     {
