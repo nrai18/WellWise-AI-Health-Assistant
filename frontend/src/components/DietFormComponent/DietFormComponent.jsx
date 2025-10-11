@@ -170,7 +170,7 @@ export const DietFormComponent = () => {
                 name="weight"
                 control={control}
                 label="Weight (kg)"
-                min={10}
+                min={1}
                 max={200}
                 placeholder="e.g., 65"
               />
@@ -258,9 +258,14 @@ export const DietFormComponent = () => {
                     {...field}
                     className="w-full p-2 rounded-md bg-gray-100 focus:ring-2 focus:ring-emerald-400 outline-none transition border-gray-300"
                   >
+                    <option value="">select</option>
                     <option value="Lose weight">Lose weight</option>
                     <option value="Maintain weight">Maintain weight</option>
-                    <option value="Gain weight">Gain weight</option>
+                    <option value="Gain weight">Mild weight loss</option>
+                    <option value="Gain weight">weight loss</option>
+                    <option value="Extreme weight loss">
+                      Extreme weight loss
+                    </option>
                   </select>
                 )}
               />

@@ -25,6 +25,9 @@ export default function Footer() {
         <Link to="/" className="flex items-center mt-3 mb-4 md:mb-0">
           <img src={icon} alt="Logo" className="h-24 sm:h-28 md:h-32 mr-4" />
         </Link>
+        <span className="text-xl sm:text-2xl font-extrabold bg-gradient-to-r from-green-500 to-lime-500 bg-clip-text text-transparent leading-none">
+          Well Wise
+        </span>
 
         <a
           href="https://github.com/Raghav-Code-dt/Well-Wise-Healthcare"
@@ -33,7 +36,6 @@ export default function Footer() {
           rel="noreferrer"
         >
           {githubIcon}
-          
         </a>
       </div>
     </footer>
