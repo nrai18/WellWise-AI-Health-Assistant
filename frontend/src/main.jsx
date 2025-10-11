@@ -23,6 +23,8 @@ import { DietFormComponent } from "./components/DietFormComponent/DietFormCompon
 import WellAI from './components/WellAI/WellAI.jsx';
 import { FormProvider } from './context/FormContext.jsx';
 import { DietProvider } from './components/DietFormComponent/DietFormComponent.jsx';
+import { ExerciseFormComponent, ExerciseProvider } from './components/ExerciseFormComponent/ExerciseFormComponent.jsx';
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,16 +41,19 @@ const router = createBrowserRouter(
       <Route path="/result" element={<ResultPage />} />
       <Route path="diet" element={<DietFormComponent />} />
       <Route path="WellAI" element={<WellAI />} />
+      <Route path="exercise" element={<ExerciseFormComponent />} />
     </Route>
   )
 );
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <FormProvider>
       <DietProvider>
-        <RouterProvider router={router} />
+        <ExerciseProvider>
+          <RouterProvider router={router} />
+        </ExerciseProvider>
       </DietProvider>
     </FormProvider>
-  </StrictMode>,
-)
+  </StrictMode>
+);

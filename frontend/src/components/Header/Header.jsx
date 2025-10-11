@@ -10,7 +10,7 @@ export default function Header() {
     { name: "Home", path: "/" },
     { name: "Well Form", path: "/About" },
     { name: "Diet", path: "/Diet" },
-    { name: "Contact", path: "/Contact" },
+    { name: "Exercise", path: "/Exercise" },
     { name: "WellAi", path: "/WellAI" },
   ];
 
