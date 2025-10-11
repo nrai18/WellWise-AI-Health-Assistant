@@ -22,13 +22,13 @@ export default function SubmitPage() {
       onSubmit={handleSubmit}
       className="relative max-w-6xl mx-auto space-y-10 px-8 py-12 bg-gradient-to-br from-emerald-50 via-white to-green-50 rounded-3xl shadow-2xl overflow-hidden"
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-emerald-300/20 via-green-200/20 to-blue-300/20 blur-3xl animate-pulseSlow"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-emerald-300/20 via-green-200/20 to-blue-300/20  animate-pulseSlow"></div>
 
       <h2 className="relative text-5xl font-extrabold text-center text-gray-800 tracking-tight animate-fadeDown drop-shadow-sm">
         Step 3 — Review & Submit
       </h2>
 
-      <div className="relative bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-2xl border border-gray-100 hover:shadow-[0_0_25px_rgba(16,185,129,0.3)] transition-all duration-500 animate-scaleIn">
+      <div className="relative bg-white/80 p-10 rounded-3xl shadow-2xl border border-gray-100 hover:shadow-[0_0_25px_rgba(16,185,129,0.3)] transition-all duration-500 animate-scaleIn">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-5 text-gray-700 text-[15px] leading-relaxed">
           {[
             ["Age", Number(formData.Age) || "—"],
