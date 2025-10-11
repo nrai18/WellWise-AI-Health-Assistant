@@ -11,10 +11,24 @@ export default function WellAI() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+  
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    requestAnimationFrame(() => {
+      if (messages.length === 0) {
+        // when cleared, make sure it stays at top
+        container.scrollTop = 0;
+      } else {
+        // scroll to bottom of messages container only
+        container.scrollTop = container.scrollHeight;
+      }
+    });
   }, [messages]);
+
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -68,7 +82,7 @@ export default function WellAI() {
           <h1 className="chat-title">Well AI</h1>
         </div>
 
-        <div className="messages">
+        <div className="messages" ref={messagesContainerRef}>
           {messages.map((msg, idx) => (
             <div
               key={idx}
@@ -76,6 +90,7 @@ export default function WellAI() {
                 msg.sender === "user" ? "user-row" : "bot-row"
               }`}
             >
+<<<<<<< Updated upstream
               {msg.sender === "bot" && (
                 <img
                   src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
@@ -101,6 +116,37 @@ export default function WellAI() {
                   alt="user"
                   className="avatar"
                 />
+=======
+              {msg.sender === "bot" ? (
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  rehypePlugins={[rehypeHighlight]}
+                  components={{
+                    a: (props) => (
+                      <a
+                        {...props}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="markdown-link"
+                      />
+                    ),
+                    code: ({ inline, className, children, ...props }) => (
+                      <code
+                        className={`${inline ? "inline-code" : "block-code"} ${
+                          className || ""
+                        }`}
+                        {...props}
+                      >
+                        {children}
+                      </code>
+                    ),
+                  }}
+                >
+                  {msg.text}
+                </ReactMarkdown>
+              ) : (
+                msg.text
+>>>>>>> Stashed changes
               )}
             </div>
           ))}
