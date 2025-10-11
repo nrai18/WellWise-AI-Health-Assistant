@@ -82,7 +82,7 @@ export default function WellAI() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="chat-box ">
+      <div className="chat-box">
         <div className="chat-header">
           <img src={icon} alt="bot" className="bot-logo" />
           <h1 className="chat-title mt-1">Well AI-Your personal Health Chatbot</h1>
