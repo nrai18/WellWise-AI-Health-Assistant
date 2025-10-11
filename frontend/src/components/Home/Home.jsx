@@ -253,7 +253,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Section 4 - Feature Showcase (NEW SECTION HERE) */}
       <FeatureShowcase />
     </div>
   );

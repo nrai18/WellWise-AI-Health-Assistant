@@ -129,7 +129,6 @@ export default function ResultPage() {
         </Canvas>
       </div>
 
-      {/* Remaining Life Expectancy */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -145,7 +144,7 @@ export default function ResultPage() {
         <p className="text-gray-300 mt-2 text-lg">(Current age: {userAge})</p>
       </motion.div>
 
-      {/* Loading */}
+
       {loading && (
         <p className="text-gray-300 text-xl mt-10 animate-pulse">
           ⏳ Calculating your life expectancy...
