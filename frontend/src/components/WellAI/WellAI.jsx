@@ -6,6 +6,7 @@ import "highlight.js/styles/github.css";
 import "./WellAI.css";
 import icon from "../../assets/Images/icon.png";
 
+
 export default function WellAI() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
@@ -70,11 +71,19 @@ export default function WellAI() {
   };
 
   return (
-    <div className="chat-wrapper">
-      <div className="chat-box">
+    <div
+      className="chat-wrapper"
+      style={{
+        backgroundImage: `url("https://images.pexels.com/photos/1420008/pexels-photo-1420008.jpeg")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div className="chat-box ">
         <div className="chat-header">
           <img src={icon} alt="bot" className="bot-logo" />
-          <h1 className="chat-title">Well AI</h1>
+          <h1 className="chat-title mt-1">Well AI</h1>
         </div>
 
         <div className="messages" ref={messagesContainerRef}>

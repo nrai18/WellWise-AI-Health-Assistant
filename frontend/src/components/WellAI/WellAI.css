@@ -8,6 +8,7 @@
 }
 
 .chat-box {
+  margin-top: 60px;
   width: 700px;
   height: 80vh;
   background: #ffffff;
@@ -40,14 +41,14 @@
 }
 
 .bot-logo {
-  width: 36px;
-  height: 36px;
+  width: 60px;
+  height: 60px;
 }
 
 .chat-title {
   font-size: 20px;
   font-weight: 600;
-  color: #0077cc;
+  color: #0ee107;
 }
 
 /* Message area */
