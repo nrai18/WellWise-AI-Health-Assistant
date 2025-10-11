@@ -52,6 +52,7 @@ export const ExerciseFormComponent = () => {
     exercisePlan,
     setExercisePlan,
   } = useExerciseContext();
+ const [isLoading, setIsLoading] = useState(false);
 
   const { handleSubmit, control, watch } = useForm({
     defaultValues: exerciseFormData,
@@ -67,7 +68,9 @@ export const ExerciseFormComponent = () => {
     { name: "fullGym", label: "Full Gym" },
   ];
 
-  const onSubmit = async (data) => {
+    const onSubmit = async (data) => {
+      setIsLoading(true);
+
     console.log("Submitting Exercise Data:", data);
     updateExerciseFormData(data);
 
@@ -89,6 +92,8 @@ export const ExerciseFormComponent = () => {
     } catch (error) {
       console.error("Error fetching plan:", error);
       alert("Something went wrong while generating your workout plan.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -246,9 +251,10 @@ export const ExerciseFormComponent = () => {
           <div className="mt-10 text-center">
             <button
               type="submit"
-              className="py-2.5 px-8 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 hover:from-emerald-600 hover:to-green-600 text-white font-semibold rounded-full shadow-lg hover:shadow-emerald-400/40 transition-all duration-500 hover:scale-110"
+              disabled={isLoading}
+              className="py-2.5 px-8 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 hover:from-emerald-600 hover:to-green-600 text-white font-semibold rounded-full shadow-lg hover:shadow-emerald-400/40 transition-all duration-500 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
             >
-              Generate Workout
+              {isLoading ? "Generating..." : "Generate"}
             </button>
           </div>
         </div>
