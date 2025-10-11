@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS 
+from flask_cors import CORS  # Import CORS
 import pandas as pd
 import numpy as np
 import joblib
@@ -7,16 +7,19 @@ import os
 from datetime import datetime
 import json
 
-
+# File to save user submissions
 USER_DATA_FILE = "user_data.txt"
 
 
+# --- Initialize Flask App ---
 app = Flask(__name__)
-CORS(app)  
+CORS(app)  # ✅ ADDED: Allow all cross-origin requests for network access
 
+# --- Define lists for one-hot encoding (must match training script v15) ---
 ALL_FAMILY_HISTORIES = ['Diabetes', 'Heart Disease', 'Cancer']
 ALL_EXISTING_CONDITIONS = ['Hypertension', 'Asthma', 'COPD']
 
+# --- Complete State-Specific Data for Narrative Summary ---
 STATE_DATA = {
     'Andhra Pradesh': {'avg_le': 70.0}, 'Arunachal Pradesh': {'avg_le': 70.3}, 'Assam': {'avg_le': 67.2},
     'Bihar': {'avg_le': 69.5}, 'Chhattisgarh': {'avg_le': 68.9}, 'Goa': {'avg_le': 74.5},
@@ -30,13 +33,14 @@ STATE_DATA = {
     'West Bengal': {'avg_le': 72.8}, 'Delhi': {'avg_le': 75.3}
 }
 
+# --- Load the final v15 Model and Encoders ---
 try:
     script_dir = os.path.dirname(os.path.abspath(__file__))
     model_path = os.path.join(script_dir, 'models', 'life_expectancy_model_v15.pkl')
     encoders_path = os.path.join(script_dir, 'models', 'label_encoders_v15.pkl')
     model = joblib.load(model_path)
     encoders = joblib.load(encoders_path)
-    print(" Final multi-condition model (v15) loaded successfully!")
+    print("✅ Final multi-condition model (v15) loaded successfully!")
 except FileNotFoundError:
     print("❌ Error: Model v15 files not found. Please ensure they are in the 'models' folder.")
     model = None
@@ -63,6 +67,7 @@ def generate_recommendations(data, family_histories, existing_conditions):
 
 @app.route('/')
 def home():
+    # Provide a simple JSON response to confirm the API is running
     return jsonify({"status": "success", "message": "Life Expectancy Prediction API is running."})
 
 @app.route('/predict', methods=['POST'])
@@ -71,13 +76,16 @@ def predict():
         return jsonify({'error': 'Model not loaded.'}), 500
 
     try:
+        # This API will only accept JSON data
         form_data = request.get_json()
+        # --- Save user submission to text file ---
         submission = {
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "data": form_data
         }
         with open(USER_DATA_FILE, "a") as f:
             f.write(json.dumps(submission) + "\n")
+        # ---------------------------------------
 
         if not form_data:
             return jsonify({'error': 'Invalid JSON or no data received.'}), 400
@@ -178,11 +186,14 @@ def predict():
             "summary": summary, "recommendations": recommendations, "status": "success"
         }
 
+        # ✅ CHANGED: Always return JSON, never render a template
         return jsonify(response_data)
 
     except Exception as e:
+        # Provide a more detailed error log for debugging
         print(f"❌ An error occurred during prediction: {e}")
         return jsonify({'error': f"An unexpected error occurred: {e}"}), 500
 
 if __name__ == '__main__':
+    # ✅ CHANGED: Use host='0.0.0.0' to make it accessible on your network
     app.run(host='0.0.0.0', port=5001, debug=True)
