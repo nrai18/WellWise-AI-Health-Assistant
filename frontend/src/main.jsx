@@ -18,6 +18,7 @@ import Step3 from './components/About/Step3.jsx';
 import Step4 from './components/About/Step4.jsx';
 import Step5 from './components/About/Step5.jsx';
 import SubmitPage from './components/About/SubmitPage.JSX';
+import ResultPage from "./components/Result/Result.jsx";
 import { FormProvider } from './context/FormContext.jsx';
 
 const router = createBrowserRouter(
@@ -32,6 +33,7 @@ const router = createBrowserRouter(
         <Route path="step5" element={<Step5 />} />
         <Route path="submit" element={<SubmitPage />} />
       </Route>
+      <Route path="/result" element={<ResultPage />} />
     </Route>
   )
 );
