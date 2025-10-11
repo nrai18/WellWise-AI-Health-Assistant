@@ -7,7 +7,7 @@ An intelligent engine designed to predict life expectancy, identify key lifestyl
 
 ## 📖 Core Mission
 
-Aura Health AI moves beyond generic health advice. By analyzing your unique lifestyle and health data, our engine provides a clear, data-driven forecast of your potential longevity. More importantly, it highlights the specific positive and negative factors influencing that outcome and generates actionable recommendations to help you take control of your health journey.
+Well Wise AI Engine moves beyond generic health advice. By analyzing your unique lifestyle and health data, our engine provides a clear, data-driven forecast of your potential longevity. More importantly, it highlights the specific positive and negative factors influencing that outcome and generates actionable recommendations to help you take control of your health journey.
 
 ## ✨ Key Features
 
