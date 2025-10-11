@@ -11,7 +11,7 @@ export default function Header() {
     { name: "Well Form", path: "/About" },
     { name: "Diet", path: "/Diet" },
     { name: "Contact", path: "/Contact" },
-    { name: "WellAi", path: "/User" },
+    { name: "WellAi", path: "/WellAI" },
   ];
 
   const toggleMenu = () => setIsOpen(!isOpen);
