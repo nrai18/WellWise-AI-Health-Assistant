@@ -73,8 +73,7 @@ export default function ResultPage() {
 
       try {
         const response = await fetch(
-             "https://ungivable-wantless-dahlia.ngrok-free.dev/predict",
-          // "https://nicholas-unmilitarised-matteo.ngrok-free.dev/predict",
+          "https://nicholas-unmilitarised-matteo.ngrok-free.dev/predict",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
