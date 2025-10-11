@@ -96,7 +96,6 @@ export default function WellAI() {
                 msg.sender === "user" ? "user-row" : "bot-row"
               }`}
             >
-              {/* Bot avatar */}
               {msg.sender === "bot" && (
                 <img
                   src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"

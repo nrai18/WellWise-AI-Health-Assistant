@@ -8,6 +8,7 @@
 }
 
 .chat-box {
+  margin-top: 60px;
   width: 700px;
   height: 80vh;
   background: #ffffff;
@@ -18,8 +19,6 @@
   padding: 20px;
 }
 
-
-/* Header */
 .chat-header {
   display: flex;
   align-items: center;
@@ -29,7 +28,6 @@
   padding-bottom: 10px;
 }
 
-/* Title */
 .chat-title {
   text-align: center;
   color: #0ee107;
@@ -40,17 +38,17 @@
 }
 
 .bot-logo {
-  width: 36px;
-  height: 36px;
+  width: 60px;
+  height: 60px;
+  margin-right : -15px;
 }
 
 .chat-title {
   font-size: 20px;
   font-weight: 600;
-  color: #0077cc;
+  color: #0ee107;
 }
 
-/* Message area */
 .messages {
   flex: 1;
   overflow-y: auto;
@@ -62,7 +60,6 @@
   scroll-behavior: smooth;
 }
 
-/* Message alignment */
 .message-row {
   display: flex;
   align-items: flex-end;
@@ -77,13 +74,12 @@
   justify-content: flex-end;
 }
 
-/* Avatar */
 .avatar {
-  width: 40px;       /* controls width */
-  height: 40px;      /* controls height */
+  width: 40px;       
+  height: 40px;      
   border-radius: 50%;
   margin: 0 8px;
-  object-fit: cover; /* keeps image aspect ratio */
+  object-fit: cover; 
 }
 
 .bot-row .avatar {
@@ -96,7 +92,6 @@
   height: 36px;
 }
 
-/* Chat bubbles */
 .message {
   padding: 10px 14px;
   border-radius: 16px;
@@ -219,60 +214,4 @@
 
 .messages::-webkit-scrollbar-thumb:hover {
   background: #888;
-}
-
-
-@media (max-width: 768px) {
-    /* 1. Wrapper now uses 100% height, relying on the html/body fix */
-    .chat-wrapper {
-        height: 100%; 
-        padding: 0;
-        align-items: stretch; 
-        background-attachment: fixed;
-        background-size: cover;
-    }
-
-    /* 2. Chat box uses 100% height and flex column */
-    .chat-box {
-        width: 100%;
-        height: 100%; /* Fills 100% of the wrapper's height */
-        margin-top: 0;
-        border-radius: 0;
-        box-shadow: none;
-        padding: 15px;
-        /* Ensure it remains a flex column to manage header/messages/input */
-        display: flex; 
-        flex-direction: column;
-    }
-
-    /* 3. Header and Input are fixed size (flex-shrink: 0) */
-    .chat-header {
-        gap: 8px;
-        padding-bottom: 8px;
-        flex-shrink: 0; 
-    }
-
-    /* ... other header/logo/title styles (unchanged from previous) ... */
-    .bot-logo { width: 40px; height: 40px; }
-    .chat-title { font-size: 18px; margin-bottom: 8px; }
-
-
-    /* 4. Messages container takes ALL remaining vertical space (flex: 1) */
-    .messages {
-        flex: 1 1 auto; /* CRUCIAL: Makes this element fill the remaining space */
-        min-height: 0; /* Prevents overflow */
-        margin: 10px 0;
-        padding: 8px;
-    }
-
-    /* ... other message/avatar/input styles (unchanged from previous) ... */
-    .input-section { flex-shrink: 0; }
-    .clear-btn { flex-shrink: 0; }
-}
-
-/* Further optimization for very small screens */
-@media (max-width: 480px) {
-    .chat-title {
-        font-size: 16px;
-    }
 }
