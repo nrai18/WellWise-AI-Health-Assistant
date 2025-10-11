@@ -253,7 +253,7 @@ export default function Home() {
         </div>
       </section>
 
-      <FeatureShowcase />
+      
     </div>
   );
 }
