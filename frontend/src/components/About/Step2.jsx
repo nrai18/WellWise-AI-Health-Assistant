@@ -113,7 +113,7 @@ export default function Step2() {
             BMI
             <span>
                 ⓘ
-                <span className="absolute left-6 top-0 w-56 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 pointer-events-none transition-all duration-300 z-[9999]">
+                <span className="absolute left-20 top-1 w-56 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 pointer-events-none transition-all duration-300 z-[9999]">
                 BMI (Body Mass Index) is a measure of body fat based on height and
                 weight. A BMI between 18.5 and 24.9 is considered healthy.
             </span>
@@ -167,10 +167,7 @@ export default function Step2() {
                 </label>
                 <span className="relative cursor-pointer text-emerald-600 font-bold text-sm group-hover:text-emerald-800 transition">
                 ⓘ
-                <span className="absolute -left-10 top-6 w-64 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 group-hover:translate-y-0 -translate-y-2 pointer-events-none transition-all duration-300 z-[9999]">
-                    Resting Heart Rate measures how many times your heart beats per minute
-                    while at rest. A typical healthy range is 60–100 bpm.
-                </span>
+               
                 </span>
             </div>
 

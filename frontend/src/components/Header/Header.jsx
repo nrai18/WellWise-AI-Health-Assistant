@@ -19,13 +19,12 @@ export default function Header() {
     <header className="fixed top-3 left-0 w-full z-50 flex justify-center">
       <div className="w-[92%] sm:w-[90%] md:w-[86%] lg:w-[80%] xl:w-[76%] transition-all duration-300 backdrop-blur-md bg-white/15 shadow-lg rounded-3xl md:rounded-[2rem] lg:rounded-[2.5rem]">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-3 md:py-4 flex justify-between items-center">
-
           <Link
             to="/"
             className="flex items-center gap-2 transform transition-transform duration-300 hover:scale-105"
           >
-            <img className="" width={50} height={50} src={icon} alt="Well Wise Logo" />
-            <span className="text-xl sm:text-2xl font-extrabold bg-gradient-to-r from-green-500 to-lime-500 bg-clip-text text-transparent">
+           
+            <span className="text-xl sm:text-2xl font-extrabold bg-gradient-to-r from-green-500 to-lime-500 bg-clip-text text-transparent leading-none">
               Well Wise
             </span>
           </Link>
