@@ -475,13 +475,13 @@ export const DietFormComponent = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center font-sans mt-20">
+    <div className="bg-gray-50 min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center font-sans">
       {results ? (
         <ResultsDashboard results={results} onReset={() => setResults(null)} />
       ) : (
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-emerald-50 via-white to-green-50 p-10 rounded-3xl shadow-xl overflow-hidden"
+          className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-emerald-50 via-white to-green-50 p-10 rounded-3xl shadow-xl overflow-hidden mt-10"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-300/20 via-green-200/20 to-blue-300/20 blur-3xl animate-pulseSlow -z-10"></div>
           <div className="relative">
