@@ -11,12 +11,17 @@ import {
 
 import Layout from "./Layout.jsx";
 import Home from "./components/Home/Home.jsx";
+import About from "./components/About/About.jsx";
+import Step1 from "./components/About/Step1.jsx";
 import { FormProvider } from './context/FormContext.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route index element={<Home />} />
+      <Route path="About" element={<About />}>
+        <Route path="step1" element={<Step1 />} />
+      </Route>
     </Route>
   )
 );
