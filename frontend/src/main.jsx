@@ -28,7 +28,7 @@ import { DietProvider } from './components/DietFormComponent/DietFormComponent.j
 import { ExerciseFormComponent, ExerciseProvider } from './components/ExerciseFormComponent/ExerciseFormComponent.jsx';
 import LoginPage from './components/LoginPage/Loginpage.jsx';
 import SignupPage from './components/LoginPage/SignupPage.jsx';
-
+import HydrationTracker from './components/HydrationTracker/HydrationTracker.jsx';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -46,9 +46,9 @@ const router = createBrowserRouter(
         <Route path="diet" element={<DietFormComponent />} />
         <Route path="WellAI" element={<WellAI />} />
         <Route path="exercise" element={<ExerciseFormComponent />} />
+        <Route path="/hydration" element={<HydrationTracker />} />
       </Route>
 
-      {/* --- ADD LOGIN & VERIFICATION ROUTES OUTSIDE THE MAIN LAYOUT --- */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/result" element={<ResultPage />} />
