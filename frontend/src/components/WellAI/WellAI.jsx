@@ -38,14 +38,11 @@ export default function WellAI() {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        "https://nicholas-unmilitarised-matteo.ngrok-free.dev/chat",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: input }),
-        }
-      );
+      const res = await fetch("http://127.0.0.1:5002/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input }),
+      });
 
       const data = await res.json();
       const botMsg = {
