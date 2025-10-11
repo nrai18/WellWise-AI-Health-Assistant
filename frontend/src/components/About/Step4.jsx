@@ -110,6 +110,7 @@ export default function Step4() {
           </label>
           <input
             type="number"
+            step="any"
             {...register("Sleep Duration", {
               required: "Sleep duration is required",
               min: { value: 0, message: "Must be at least 0" },

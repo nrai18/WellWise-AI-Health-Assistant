@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useFormContext } from "../../context/FormContext";
+
 import { LocationAutoFill } from "./AQI/AQI";
 
 export default function Step5() {
@@ -72,13 +73,13 @@ export default function Step5() {
       </h2>
 
       <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700">
-        {/* Work Hours */}
         <div className="group bg-white/80 p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
           <label className="block text-emerald-700 font-semibold mb-1">
             Work Hours (per day)
           </label>
           <input
             type="number"
+            step="any"
             {...register("Work Hours", {
               required: "Work hours are required",
               min: { value: 0, message: "Enter a valid value (0–24)" },
@@ -94,26 +95,60 @@ export default function Step5() {
           )}
         </div>
 
-        <div className="group bg-white/80 p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-          <label className="block text-emerald-700 font-semibold mb-1">
-            Stress Score (1–10)
-          </label>
-          <input
-            type="number"
-            {...register("Stress Score", {
-              required: "Stress score is required",
-              min: { value: 1, message: "Minimum is 1" },
-              max: { value: 11, message: "Maximum is 11" },
-            })}
-            className="w-full p-2 rounded-md bg-gray-100 focus:ring-2 focus:ring-emerald-400 outline-none transition"
-            placeholder="Enter a value between 1 and 11"
-          />
-          {errors["Stress Score"] && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors["Stress Score"].message}
-            </p>
-          )}
-        </div>
+        <div className="group bg-white/80 p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 relative">
+  <label className="block text-emerald-700 font-semibold mb-1 flex items-center gap-2">
+    Stress Score (1–10)
+
+    {/* Tooltip Icon */}
+    <div className="relative group/tooltip">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={2}
+        stroke="currentColor"
+        className="w-5 h-5 text-emerald-600 cursor-pointer hover:text-emerald-800 transition"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 6v6m0 6h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+
+      {/* Tooltip Content */}
+      <div className="absolute z-10 w-64 p-3 text-xs text-white bg-gray-800 rounded-lg shadow-lg opacity-0 group-hover/tooltip:opacity-100 group-hover/tooltip:translate-y-0 -translate-y-2 transition-all duration-300 left-1/2 -translate-x-1/2 top-7 pointer-events-none">
+        <strong className="block mb-1 text-emerald-300">
+          Stress Score Reference
+        </strong>
+        <ul className="space-y-1">
+          <li><b>1–2:</b> Very Calm / Relaxed</li>
+          <li><b>3–4:</b> Mild Stress, manageable</li>
+          <li><b>5–6:</b> Moderate Stress, take short breaks</li>
+          <li><b>7–8:</b> High Stress, needs rest or relaxation</li>
+          <li><b>9–10:</b> Severe Stress, seek recovery or help</li>
+        </ul>
+      </div>
+    </div>
+    </label>
+
+        <input
+          type="number"
+          {...register("Stress Score", {
+            required: "Stress score is required",
+            min: { value: 1, message: "Minimum is 1" },
+            max: { value: 10, message: "Maximum is 10" },
+          })}
+          className="w-full p-2 rounded-md bg-gray-100 focus:ring-2 focus:ring-emerald-400 outline-none transition"
+          placeholder="Enter a value between 1 and 10"
+        />
+
+        {errors["Stress Score"] && (
+          <p className="text-red-500 text-sm mt-1">
+            {errors["Stress Score"].message}
+          </p>
+        )}
+      </div>
 
         <div className="group bg-white/80 p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 sm:col-span-2">
           <label className="block text-emerald-700 font-semibold mb-1">
@@ -146,16 +181,16 @@ export default function Step5() {
 
         <div className="group bg-white/80 p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
           <label className="block text-emerald-700 font-semibold mb-1">
-            Exposure Level
+            How often you interact with outside
           </label>
           <select
             {...register("Exposure", { required: "Select a valid option" })}
             className="w-full p-2 rounded-md bg-gray-100 focus:ring-2 focus:ring-emerald-400 outline-none transition"
           >
             <option value="">Select...</option>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
+            <option value="Low">Indoors</option>
+            <option value="Medium">Ocassionally</option>
+            <option value="High">Outdoors</option>
           </select>
           {errors["Exposure"] && (
             <p className="text-red-500 text-sm mt-1">
@@ -195,7 +230,6 @@ export default function Step5() {
                 />
                 <span>{disease.name}</span>
 
-                {/* Tooltip */}
                 <span className="absolute left-35 top-0 w-56 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover/tooltip:opacity-100 group-hover/tooltip:translate-y-0 -translate-y-1 pointer-events-none transition-all duration-300">
                   {disease.desc}
                 </span>
@@ -235,7 +269,6 @@ export default function Step5() {
                 />
                 <span>{condition.name}</span>
 
-                {/* Tooltip */}
                 <span className="absolute left-35 top-0 w-56 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover/tooltip:opacity-100 group-hover/tooltip:translate-y-0 -translate-y-1 pointer-events-none transition-all duration-300">
                   {condition.desc}
                 </span>

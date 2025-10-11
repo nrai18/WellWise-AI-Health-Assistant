@@ -26,7 +26,6 @@ export const ResultsDashboard = ({ results }) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-gradient-to-br from-emerald-50 via-white to-green-50 p-10 rounded-3xl shadow-xl mt-10">
-      {/* Section 1: BMI and Calorie Metrics */}
       <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">
         Your Health Snapshot
       </h2>
