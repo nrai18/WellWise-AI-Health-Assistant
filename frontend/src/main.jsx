@@ -13,6 +13,7 @@ import Layout from "./Layout.jsx";
 import Home from "./components/Home/Home.jsx";
 import About from "./components/About/About.jsx";
 import Step1 from "./components/About/Step1.jsx";
+import Step2 from "./components/About/Step2.jsx";
 import { FormProvider } from './context/FormContext.jsx';
 
 const router = createBrowserRouter(
@@ -21,6 +22,7 @@ const router = createBrowserRouter(
       <Route index element={<Home />} />
       <Route path="About" element={<About />}>
         <Route path="step1" element={<Step1 />} />
+        <Route path="step2" element={<Step2 />} />
       </Route>
     </Route>
   )

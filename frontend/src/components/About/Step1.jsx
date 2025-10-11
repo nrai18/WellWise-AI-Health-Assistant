@@ -78,6 +78,7 @@ export default function Step1() {
     };
     updateFormData(formattedData);
     delete formattedData.urbanRural;
+    navigate("/About/step2");
   };
 
   return (
@@ -85,15 +86,15 @@ export default function Step1() {
       onSubmit={handleSubmit(onSubmit)}
       className="relative max-w-4xl mx-auto bg-gradient-to-br from-emerald-50 via-white to-green-50 p-10 rounded-3xl shadow-xl overflow-hidden animate-fadeIn"
     >
-      {/* ✨ Gradient glow effect */}
+      
       <div className="absolute inset-0 bg-gradient-to-r from-emerald-300/20 via-green-200/20 to-blue-300/20 blur-3xl animate-pulseSlow"></div>
 
-      {/* Title */}
+     
       <h2 className="relative text-4xl font-extrabold text-center text-gray-800 mb-8 animate-fadeDown">
         Step 1 — Basic Info
       </h2>
 
-      {/* Inputs Container */}
+      
       <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700">
         {/* Age */}
         <div className="group bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
@@ -114,7 +115,7 @@ export default function Step1() {
           )}
         </div>
 
-        {/* Gender */}
+        
         <div className="group bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
           <label className="block text-emerald-700 font-semibold mb-1">
             Gender
@@ -133,7 +134,7 @@ export default function Step1() {
           )}
         </div>
 
-        {/* Ethnicity */}
+        
         <div className="group bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
           <label className="block text-emerald-700 font-semibold mb-1">
             Ethnicity
@@ -158,7 +159,7 @@ export default function Step1() {
           )}
         </div>
 
-        {/* State */}
+        
         <div className="group bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
           <label className="block text-emerald-700 font-semibold mb-1">
             State
@@ -187,7 +188,7 @@ export default function Step1() {
           )}
         </div>
 
-        {/* City */}
+        
         <div className="group bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
           <label className="block text-emerald-700 font-semibold mb-1">
             City
@@ -215,7 +216,7 @@ export default function Step1() {
           )}
         </div>
 
-        {/* Urban/Rural */}
+        
         <div className="group bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
           <label className="block text-emerald-700 font-semibold mb-1">
             Urban or Rural
@@ -239,7 +240,7 @@ export default function Step1() {
         </div>
       </div>
 
-      {/* Buttons */}
+      
       <div className="relative flex justify-between items-center pt-8 animate-fadeInUp">
         <button
           type="button"
