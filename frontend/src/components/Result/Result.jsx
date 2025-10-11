@@ -7,7 +7,6 @@ import CountUp from "react-countup";
 import { useLocation } from "react-router-dom";
 import { useFormContext } from "../../context/FormContext";
 
-/* ------------------ 3D LIFE SPHERE ------------------- */
 function LifeSphere({ lifeExpectancy }) {
   const meshRef = useRef();
   useFrame(() => {
@@ -44,7 +43,6 @@ function LifeSphere({ lifeExpectancy }) {
   );
 }
 
-/* ------------------ MAIN COMPONENT ------------------- */
 export default function ResultPage() {
   const location = useLocation();
   const { formData: contextData } = useFormContext();
@@ -54,7 +52,7 @@ export default function ResultPage() {
   const [lifeExpectancy, setLifeExpectancy] = useState("");
   const [backendData, setBackendData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const userAge = parseInt(formData?.Age || 20);
+  const userAge = parseInt(formData?.Age || 0);
 
   const containerRef = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -95,7 +93,6 @@ export default function ResultPage() {
     handle();
   }, []);
 
-  // 🎨 Colors for health scores
   const scoreColors = {
     Diet: "from-green-400 to-emerald-600",
     Exercise: "from-sky-400 to-blue-600",
@@ -110,7 +107,6 @@ export default function ResultPage() {
       onMouseMove={handleMouseMove}
       className="relative overflow-hidden min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-950 via-emerald-900 to-green-800 text-white"
     >
-      {/* Background Light */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
         animate={{
@@ -123,7 +119,6 @@ export default function ResultPage() {
         transition={{ duration: 0.3 }}
       />
 
-      {/* 🌍 Life Sphere */}
       <div className="w-full h-[400px] mb-8">
         <Canvas camera={{ position: [0, 0, 4] }}>
           <ambientLight intensity={0.6} />
@@ -157,7 +152,6 @@ export default function ResultPage() {
         </p>
       )}
 
-      {/* Summary */}
       {!loading && backendData?.summary && (
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -168,7 +162,6 @@ export default function ResultPage() {
         </motion.div>
       )}
 
-      {/* 🧬 Health Scores */}
       {!loading && backendData?.health_scores && (
         <div className="max-w-5xl w-full px-8 mb-16">
           <h2 className="text-3xl font-bold text-green-300 mb-6 text-center">
@@ -192,7 +185,6 @@ export default function ResultPage() {
         </div>
       )}
       
-      {/* 📈 Positive Adjustments */}
       {!loading && backendData?.adjustments && (
         <>
           <h2 className="text-3xl font-bold text-green-300 mb-6 text-center">
@@ -221,7 +213,6 @@ export default function ResultPage() {
               ))}
           </div>
 
-          {/* 🔻 Negative Impacts */}
           {backendData.adjustments.some((a) => a.impact < 0) && (
             <>
               <h2 className="text-3xl font-bold text-red-400 mb-6 text-center">
@@ -252,7 +243,6 @@ export default function ResultPage() {
             </>
           )}
 
-          {/* ⚖️ Adjustment Factor */}
           {backendData?.adjustment_factor && (
             <div className="max-w-md mx-auto text-center mb-10">
               <div className="p-6 rounded-3xl bg-gradient-to-br from-slate-500 to-gray-700 shadow-lg border border-white/10">
@@ -266,7 +256,6 @@ export default function ResultPage() {
             </div>
           )}
 
-          {/* 💡 Recommendation */}
           {backendData?.recommendations?.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 40 }}

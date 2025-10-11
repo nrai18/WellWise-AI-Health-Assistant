@@ -6,7 +6,6 @@ export default function About() {
   const location = useLocation();
   const navigate = useNavigate();
 
-
   const steps = [
     "/about/step1",
     "/about/step2",
