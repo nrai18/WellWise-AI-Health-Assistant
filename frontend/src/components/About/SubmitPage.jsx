@@ -98,7 +98,7 @@ export default function SubmitPage() {
           type="submit"
           className="py-2.5 px-8 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 hover:from-emerald-600 hover:to-green-600 text-white font-semibold rounded-full shadow-lg hover:shadow-emerald-400/40 transition-all duration-500 hover:scale-110"
         >
-          Submit ✅
+          Submit ✓
         </button>
       </div>
     </form>

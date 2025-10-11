@@ -79,6 +79,7 @@ export default function Step5() {
           </label>
           <input
             type="number"
+            step="any"
             {...register("Work Hours", {
               required: "Work hours are required",
               min: { value: 0, message: "Enter a valid value (0–24)" },
@@ -146,16 +147,16 @@ export default function Step5() {
 
         <div className="group bg-white/80 p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
           <label className="block text-emerald-700 font-semibold mb-1">
-            Exposure Level
+            How often you interact with outside
           </label>
           <select
             {...register("Exposure", { required: "Select a valid option" })}
             className="w-full p-2 rounded-md bg-gray-100 focus:ring-2 focus:ring-emerald-400 outline-none transition"
           >
             <option value="">Select...</option>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
+            <option value="Low">Indoors</option>
+            <option value="Medium">Ocassionally</option>
+            <option value="High">Outdoors</option>
           </select>
           {errors["Exposure"] && (
             <p className="text-red-500 text-sm mt-1">
@@ -195,7 +196,6 @@ export default function Step5() {
                 />
                 <span>{disease.name}</span>
 
-                {/* Tooltip */}
                 <span className="absolute left-35 top-0 w-56 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover/tooltip:opacity-100 group-hover/tooltip:translate-y-0 -translate-y-1 pointer-events-none transition-all duration-300">
                   {disease.desc}
                 </span>
@@ -235,7 +235,6 @@ export default function Step5() {
                 />
                 <span>{condition.name}</span>
 
-                {/* Tooltip */}
                 <span className="absolute left-35 top-0 w-56 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover/tooltip:opacity-100 group-hover/tooltip:translate-y-0 -translate-y-1 pointer-events-none transition-all duration-300">
                   {condition.desc}
                 </span>
