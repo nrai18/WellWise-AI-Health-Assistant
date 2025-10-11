@@ -1,5 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import Login from "./components/Login/Login";
+import VerifyLogin from "./components/Login/VerifyLogin";
 import "./index.css";
 
 import {
@@ -28,21 +30,28 @@ import { ExerciseFormComponent, ExerciseProvider } from './components/ExerciseFo
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Layout />}>
-      <Route index element={<Home />} />
-      <Route path="About" element={<About />}>
-        <Route path="step1" element={<Step1 />} />
-        <Route path="step2" element={<Step2 />} />
-        <Route path="step3" element={<Step3 />} />
-        <Route path="step4" element={<Step4 />} />
-        <Route path="step5" element={<Step5 />} />
-        <Route path="submit" element={<SubmitPage />} />
+    <>
+      {/* Main application routes with the standard layout */}
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path="About" element={<About />}>
+          <Route path="step1" element={<Step1 />} />
+          <Route path="step2" element={<Step2 />} />
+          <Route path="step3" element={<Step3 />} />
+          <Route path="step4" element={<Step4 />} />
+          <Route path="step5" element={<Step5 />} />
+          <Route path="submit" element={<SubmitPage />} />
+        </Route>
+        <Route path="diet" element={<DietFormComponent />} />
+        <Route path="WellAI" element={<WellAI />} />
+        <Route path="exercise" element={<ExerciseFormComponent />} />
       </Route>
+
+      {/* --- ADD LOGIN & VERIFICATION ROUTES OUTSIDE THE MAIN LAYOUT --- */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/verify-login" element={<VerifyLogin />} />
       <Route path="/result" element={<ResultPage />} />
-      <Route path="diet" element={<DietFormComponent />} />
-      <Route path="WellAI" element={<WellAI />} />
-      <Route path="exercise" element={<ExerciseFormComponent />} />
-    </Route>
+    </>
   )
 );
 

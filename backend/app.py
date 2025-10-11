@@ -1,3 +1,6 @@
+# --- Add these imports at the top of app.py ---
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 import os
 import json
 import logging
@@ -11,6 +14,72 @@ load_dotenv()
 
 # --- Initialize Flask App ---
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'your-super-secret-key-for-tokens' # Change this to a random string
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+
+mail = Mail(app)
+serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+
+
+# --- Add this NEW API route to generate the login link ---
+@app.route('/api/login', methods=['POST'])
+def login():
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        if not email:
+            return jsonify({"error": "Email is required"}), 400
+
+        # Generate a secure token that expires in 15 minutes
+        token = serializer.dumps(email, salt='email-confirm')
+        
+        # Create the magic link
+        confirm_url = f"http://localhost:5173/verify-login?token={token}"
+        
+        # Create and "send" the email (Mailtrap will catch it)
+        html = f"<h3>Hello from Well Wise!</h3><p>Please click this link to log in: <a href='{confirm_url}'>{confirm_url}</a></p>"
+        msg = Message('Your Well Wise Login Link', sender='noreply@wellwise.com', recipients=[email])
+        msg.html = html
+        mail.send(msg)
+        
+        logging.info(f"Login link sent for {email}. Token: {token}")
+        return jsonify({"message": f"Login link sent to {email}. Please check your Mailtrap inbox."})
+    except Exception as e:
+        logging.error(f"Error in /api/login: {e}")
+        return jsonify({"error": "Failed to send login link."}), 500
+
+
+# --- Add this NEW API route to verify the token ---
+@app.route('/api/verify-token', methods=['POST'])
+def verify_token():
+    try:
+        data = request.get_json()
+        token = data.get('token')
+        
+        # Verify the token and its expiration (15 mins = 900 seconds)
+        email = serializer.loads(token, salt='email-confirm', max_age=900)
+        
+        logging.info(f"Token verified for email: {email}")
+        # In a real app, you would create a session/JWT for the user here.
+        # For now, we'll just confirm success.
+        user = {"email": email, "name": "Test User"} # Dummy user object
+        
+        return jsonify({"message": "Login successful!", "user": user})
+    except SignatureExpired:
+        logging.warning("Expired token received.")
+        return jsonify({"error": "The login link has expired."}), 400
+    except Exception as e:
+        logging.error(f"Error in /api/verify-token: {e}")
+        return jsonify({"error": "Invalid or malformed login link."}), 400
+
+# ... (keep all your other API routes like /api/get_full_plan)
+# ... (keep if __name__ == '__main__': at the bottom)
 
 # --- Configuration ---
 logging.basicConfig(level=logging.INFO)
