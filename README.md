@@ -1,4 +1,4 @@
-# Well Wise-M 🚀
+# Well Wise 🍎🏋️‍♂️🥗
 
 A web-based AI Health Assistant that uses personal and lifestyle data to provide **holistic wellness guidance**. The platform predicts health risks, estimates life expectancy, and generates personalized diet, exercise, and hydration plans. The goal is to shift users from passive data tracking to **proactive lifestyle changes**.
 
