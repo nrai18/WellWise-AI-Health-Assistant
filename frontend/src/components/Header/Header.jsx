@@ -41,7 +41,7 @@ export default function Header() {
                     ${
                       isActive
                         ? "text-green-500 font-semibold"
-                        : "text-gray-300 hover:text-green-500"
+                        : "text-gray-400 hover:text-green-500"
                     }`
                   }
                 >
@@ -55,7 +55,7 @@ export default function Header() {
           <div className="hidden lg:flex items-center space-x-4">
             <Link
               to="login"
-              className="px-4 py-2 text-gray-300 hover:text-green-600 transition font-medium"
+              className="px-4 py-2 text-gray-400 hover:text-green-600 transition font-medium"
             >
               Log in
             </Link>
