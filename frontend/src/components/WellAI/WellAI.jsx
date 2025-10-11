@@ -40,7 +40,7 @@ export default function WellAI() {
       console.error("Error:", err);
       setMessages((prev) => [
         ...prev,
-        { sender: "bot", text: "Error connecting to the server." },
+        { sender: "bot", text: "⚠️ Error connecting to the server." },
       ]);
     } finally {
       setLoading(false);
@@ -58,48 +58,53 @@ export default function WellAI() {
   return (
     <div className="chat-wrapper">
       <div className="chat-box">
-        <h1 className="chat-title">🩺 WellWise Health Chatbot</h1>
+        <div className="chat-header">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
+            alt="bot"
+            className="bot-logo"
+          />
+          <h1 className="chat-title">WellWise Health Assistant</h1>
+        </div>
 
         <div className="messages">
           {messages.map((msg, idx) => (
             <div
               key={idx}
-              className={`message ${msg.sender === "user" ? "user" : "bot"}`}
+              className={`message-row ${
+                msg.sender === "user" ? "user-row" : "bot-row"
+              }`}
             >
-              {msg.sender === "bot" ? (
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  rehypePlugins={[rehypeHighlight]}
-                  components={{
-                    a: (props) => (
-                      <a
-                        {...props}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="markdown-link"
-                      />
-                    ),
-                    code: ({ inline, className, children, ...props }) => (
-                      <code
-                        className={`${
-                          inline ? "inline-code" : "block-code"
-                        } ${className || ""}`}
-                        {...props}
-                      >
-                        {children}
-                      </code>
-                    ),
-                  }}
-                >
-                  {msg.text}
-                </ReactMarkdown>
-              ) : (
-                msg.text
+              {msg.sender === "bot" && (
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
+                  alt="bot"
+                  className="avatar"
+                />
+              )}
+              <div className={`message ${msg.sender}`}>
+                {msg.sender === "bot" ? (
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeHighlight]}
+                  >
+                    {msg.text}
+                  </ReactMarkdown>
+                ) : (
+                  msg.text
+                )}
+              </div>
+              {msg.sender === "user" && (
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/1077/1077012.png"
+                  alt="user"
+                  className="avatar"
+                />
               )}
             </div>
           ))}
 
-          {loading && <div className="loading">AI is thinking...</div>}
+          {loading && <div className="loading">💭 AI is thinking...</div>}
           <div ref={chatEndRef} />
         </div>
 
@@ -112,12 +117,12 @@ export default function WellAI() {
             onKeyDown={handleKeyPress}
           />
           <button onClick={sendMessage} disabled={loading}>
-            Send
+            ➤
           </button>
         </div>
 
         <button className="clear-btn" onClick={clearChat}>
-          Clear Chat
+          🧹 Clear Chat
         </button>
       </div>
     </div>
