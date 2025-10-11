@@ -1,7 +1,6 @@
 # Well Wise AI Engine: Predict, Understand, and Improve Your Longevity
 
 [![Status](https://img.shields.io/badge/status-active-success)](https://github.com/your-username/aura-health-ai)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 An intelligent engine designed to predict life expectancy, identify key lifestyle impacts, and provide personalized recommendations to help you live a longer, healthier life.
 
