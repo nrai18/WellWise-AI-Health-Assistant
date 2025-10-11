@@ -65,8 +65,11 @@ const Confetti = () => {
 
 // Main App Component
 export default function App() {
-  const DAILY_GOAL_ML = 2000;
+  const BASE_GOAL_ML = 2000;
   const GLASS_SIZE_ML = 250;
+
+  const [dailyGoal, setDailyGoal] = useState(BASE_GOAL_ML);
+  const [weatherInfo, setWeatherInfo] = useState("Fetching local weather...");
 
   // State is now initialized from localStorage
   const [intake, setIntake] = useState(() => {
@@ -81,7 +84,59 @@ export default function App() {
 
   const [animate, setAnimate] = useState(false);
 
+  // Effect for fetching location and weather data on mount
   useEffect(() => {
+    const fetchWeatherAndLocation = async (lat, lon) => {
+      try {
+        const weatherResponse = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=relative_humidity_2m`
+        );
+        const weatherData = await weatherResponse.json();
+        const humidity = weatherData.current.relative_humidity_2m;
+
+        const locationResponse = await fetch(
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`
+        );
+        const locationData = await locationResponse.json();
+        const city = locationData.city || "your area";
+
+        let newGoal = BASE_GOAL_ML;
+        if (humidity > 75) {
+          newGoal += 500; // Add 500ml for very high humidity
+        } else if (humidity > 60) {
+          newGoal += 250; // Add 250ml for moderate humidity
+        }
+
+        setDailyGoal(newGoal);
+        setWeatherInfo(
+          `With ${humidity}% humidity in ${city}, your goal is ${newGoal}ml today.`
+        );
+      } catch (error) {
+        console.error("Failed to fetch weather data:", error);
+        setWeatherInfo("Could not fetch weather. Using default goal.");
+        setDailyGoal(BASE_GOAL_ML);
+      }
+    };
+
+    const locationSuccess = (position) => {
+      fetchWeatherAndLocation(
+        position.coords.latitude,
+        position.coords.longitude
+      );
+    };
+
+    const locationError = () => {
+      console.error("Location permission denied. Using default.");
+      // Default to Gwalior, India if permission is denied
+      fetchWeatherAndLocation(26.2183, 78.1828);
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(locationSuccess, locationError);
+    } else {
+      locationError(); // Geolocation not supported
+    }
+
     setTimeout(() => setAnimate(true), 100);
   }, []);
 
@@ -95,23 +150,24 @@ export default function App() {
   }, [intake]);
 
   const addWater = () => {
-    setIntake((prevIntake) =>
-      Math.min(prevIntake + GLASS_SIZE_ML, DAILY_GOAL_ML)
-    );
+    setIntake((prevIntake) => Math.min(prevIntake + GLASS_SIZE_ML, dailyGoal));
   };
 
   const resetIntake = () => {
     setIntake(0);
   };
 
-  const progress = useMemo(() => (intake / DAILY_GOAL_ML) * 100, [intake]);
+  const progress = useMemo(
+    () => (intake / dailyGoal) * 100,
+    [intake, dailyGoal]
+  );
   const animatedProgress = useCountUp(Math.round(progress), 1);
 
   const glassesConsumed = intake / GLASS_SIZE_ML;
-  const goalInGlasses = DAILY_GOAL_ML / GLASS_SIZE_ML;
+  const goalInGlasses = dailyGoal / GLASS_SIZE_ML;
 
   const getEncouragement = () => {
-    if (progress === 100) return "Great job! You reached your goal! 🎉";
+    if (progress >= 100) return "Great job! You reached your goal! 🎉";
     if (progress >= 75) return "You're almost there, keep it up!";
     if (progress >= 50) return "You're halfway there!";
     if (progress > 0) return "Good start! Every drop counts.";
@@ -124,14 +180,15 @@ export default function App() {
   return (
     <div className="bg-green-50 min-h-screen flex items-center justify-center font-sans p-4">
       <div
-        className={`relative w-full max-w-sm bg-white rounded-2xl shadow-lg p-8 text-center transition-all duration-500 ease-in-out transform mt-10 ${
+        className={`relative w-full max-w-sm bg-white rounded-2xl shadow-lg p-8 text-center transition-all duration-500 ease-in-out transform mt-20 ${
           animate ? "scale-100 opacity-100" : "scale-90 opacity-0"
         }`}
       >
-        {progress === 100 && <Confetti />}
+        {progress >= 100 && <Confetti />}
 
         <h1 className="text-3xl font-bold text-green-800">Hydration Tracker</h1>
-        <p className="text-gray-500 mt-2 mb-6 h-6">{getEncouragement()}</p>
+        <p className="text-gray-600 text-xs mt-2 mb-4 h-8">{weatherInfo}</p>
+        <p className="text-gray-500 -mt-2 mb-6 h-6">{getEncouragement()}</p>
 
         <div className="relative w-48 h-48 mx-auto mb-6">
           <svg className="w-full h-full" viewBox="0 0 160 160">
@@ -170,16 +227,16 @@ export default function App() {
         </div>
 
         <div className="text-lg font-semibold text-green-900 mb-6">
-          <span>{intake}</span> / <span>{DAILY_GOAL_ML} ml</span>
+          <span>{intake}</span> / <span>{dailyGoal} ml</span>
           <p className="text-sm font-normal text-gray-500 mt-1">
-            ({glassesConsumed.toFixed(0)} of {goalInGlasses} glasses)
+            ({glassesConsumed.toFixed(1)} of {goalInGlasses.toFixed(1)} glasses)
           </p>
         </div>
 
         <div className="flex flex-col gap-4">
           <button
             onClick={addWater}
-            disabled={intake >= DAILY_GOAL_ML}
+            disabled={intake >= dailyGoal}
             className="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 transition-all duration-300 disabled:bg-green-300 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
           >
             Add a Glass ({GLASS_SIZE_ML}ml)
