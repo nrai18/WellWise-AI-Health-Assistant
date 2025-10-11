@@ -139,14 +139,14 @@ export default function Home() {
         >
           Our AI-powered platform doesn’t just track your steps. It gives you
           real wellness insights — life expectancy estimates, personalized diet
-          & exercise plans, and disease risk predictions.
+          & exercise plans, and real-time chat.
         </motion.p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl">
           {[
             {
-              title: "Smart Risk Prediction",
-              desc: "Identify potential health risks early with our ML-driven models.",
+              title: "Life Estimate Prediction",
+              desc: "Provides personalized insights to help you make proactive decisions about your future health.",
             },
             {
               title: "Personalized Guidance",
@@ -228,11 +228,11 @@ export default function Home() {
           >
             <div className="text-6xl font-extrabold text-green-600">
               {inViewImpact && (
-                <CountUp end={1000} duration={3} separator="," />
+                <CountUp end={45000} duration={3} separator="," />
               )}
             </div>
             <p className="mt-2 text-gray-600 font-semibold">
-              Disease Predictions
+              Happy Users
             </p>
           </motion.div>
 

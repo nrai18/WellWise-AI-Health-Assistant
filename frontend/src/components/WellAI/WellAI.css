@@ -19,8 +19,6 @@
   padding: 20px;
 }
 
-
-/* Header */
 .chat-header {
   display: flex;
   align-items: center;
@@ -30,7 +28,6 @@
   padding-bottom: 10px;
 }
 
-/* Title */
 .chat-title {
   text-align: center;
   color: #0ee107;
@@ -43,6 +40,7 @@
 .bot-logo {
   width: 60px;
   height: 60px;
+  margin-right : -15px;
 }
 
 .chat-title {
@@ -51,7 +49,6 @@
   color: #0ee107;
 }
 
-/* Message area */
 .messages {
   flex: 1;
   overflow-y: auto;
@@ -63,7 +60,6 @@
   scroll-behavior: smooth;
 }
 
-/* Message alignment */
 .message-row {
   display: flex;
   align-items: flex-end;
@@ -78,13 +74,12 @@
   justify-content: flex-end;
 }
 
-/* Avatar */
 .avatar {
-  width: 40px;       /* controls width */
-  height: 40px;      /* controls height */
+  width: 40px;       
+  height: 40px;      
   border-radius: 50%;
   margin: 0 8px;
-  object-fit: cover; /* keeps image aspect ratio */
+  object-fit: cover; 
 }
 
 .bot-row .avatar {
@@ -97,7 +92,6 @@
   height: 36px;
 }
 
-/* Chat bubbles */
 .message {
   padding: 10px 14px;
   border-radius: 16px;

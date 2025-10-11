@@ -82,7 +82,7 @@ export default function WellAI() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="chat-box ">
+      <div className="chat-box">
         <div className="chat-header">
           <img src={icon} alt="bot" className="bot-logo" />
           <h1 className="chat-title mt-1">Well AI-Your personal Health Chatbot</h1>
@@ -96,7 +96,6 @@ export default function WellAI() {
                 msg.sender === "user" ? "user-row" : "bot-row"
               }`}
             >
-              {/* Bot avatar */}
               {msg.sender === "bot" && (
                 <img
                   src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
