@@ -165,10 +165,6 @@ export default function Step2() {
                 <label className="text-emerald-700 font-semibold mb-1">
                 Resting Heart Rate (bpm)
                 </label>
-                <span className="relative cursor-pointer text-emerald-600 font-bold text-sm group-hover:text-emerald-800 transition">
-                ⓘ
-               
-                </span>
             </div>
 
             <input
