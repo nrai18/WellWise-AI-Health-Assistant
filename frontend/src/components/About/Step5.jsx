@@ -104,10 +104,10 @@ export default function Step5() {
             {...register("Stress Score", {
               required: "Stress score is required",
               min: { value: 1, message: "Minimum is 1" },
-              max: { value: 11, message: "Maximum is 11" },
+              max: { value: 10, message: "Maximum is 11" },
             })}
             className="w-full p-2 rounded-md bg-gray-100 focus:ring-2 focus:ring-emerald-400 outline-none transition"
-            placeholder="Enter a value between 1 and 11"
+            placeholder="Enter a value between 1 and 10"
           />
           {errors["Stress Score"] && (
             <p className="text-red-500 text-sm mt-1">
