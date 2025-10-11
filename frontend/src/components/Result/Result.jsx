@@ -72,14 +72,11 @@ export default function ResultPage() {
       delete cleanedData.meatFrequency;
 
       try {
-        const response = await fetch(
-          "https://nicholas-unmilitarised-matteo.ngrok-free.dev/predict",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(cleanedData),
-          }
-        );
+        const response = await fetch("http://127.0.0.1:5001/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(cleanedData),
+        });
         const data = await response.json();
         setLifeExpectancy(Math.ceil(data.prediction));
         setBackendData(data);
