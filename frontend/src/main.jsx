@@ -26,7 +26,8 @@ import WellAI from './components/WellAI/WellAI.jsx';
 import { FormProvider } from './context/FormContext.jsx';
 import { DietProvider } from './components/DietFormComponent/DietFormComponent.jsx';
 import { ExerciseFormComponent, ExerciseProvider } from './components/ExerciseFormComponent/ExerciseFormComponent.jsx';
-
+import LoginPage from './components/LoginPage/Loginpage.jsx';
+import SignupPage from './components/LoginPage/SignupPage.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -48,8 +49,8 @@ const router = createBrowserRouter(
       </Route>
 
       {/* --- ADD LOGIN & VERIFICATION ROUTES OUTSIDE THE MAIN LAYOUT --- */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/verify-login" element={<VerifyLogin />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
       <Route path="/result" element={<ResultPage />} />
     </>
   )

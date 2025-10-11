@@ -5,6 +5,8 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github.css";
 import "./WellAI.css";
 import icon from "../../assets/Images/icon.png";
+import aiImage from "../../assets/Images/aiImage.jpeg";
+
 
 
 export default function WellAI() {
@@ -74,7 +76,7 @@ export default function WellAI() {
     <div
       className="chat-wrapper"
       style={{
-        backgroundImage: `url("https://images.pexels.com/photos/1420008/pexels-photo-1420008.jpeg")`,
+        backgroundImage: `url(${aiImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -83,7 +85,7 @@ export default function WellAI() {
       <div className="chat-box ">
         <div className="chat-header">
           <img src={icon} alt="bot" className="bot-logo" />
-          <h1 className="chat-title mt-1">Well AI</h1>
+          <h1 className="chat-title mt-1">Well AI-Your personal Health Chatbot</h1>
         </div>
 
         <div className="messages" ref={messagesContainerRef}>
