@@ -2,26 +2,47 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 
 // A custom hook for animating numbers
 const useCountUp = (end, duration = 1) => {
-  const [count, setCount] = useState(0);
-  const frameRate = 1000 / 60;
-  const totalFrames = Math.round((duration * 1000) / frameRate);
+  // Initialize state with the end value to prevent animating from 0 on the initial load.
+  const [count, setCount] = useState(end);
+  const animationFrameId = useRef();
+  const startTimeRef = useRef();
+  // We need a ref for the start value to avoid stale closures inside the animation loop.
+  const startValueRef = useRef(end);
 
   useEffect(() => {
-    let frame = 0;
-    const counter = setInterval(() => {
-      frame++;
-      const progress = frame / totalFrames;
-      const currentCount = Math.round(end * progress);
-      setCount(currentCount);
+    // When the `end` prop changes, it triggers this effect to start a new animation.
+    // The animation will start from wherever the count currently is.
+    startValueRef.current = count;
+    startTimeRef.current = performance.now();
 
-      if (frame === totalFrames) {
-        clearInterval(counter);
-        setCount(end); // Ensure it ends exactly at the target
+    const animate = (timestamp) => {
+      const elapsed = timestamp - startTimeRef.current;
+      const progress = Math.min(elapsed / (duration * 1000), 1);
+
+      const currentAnimatedValue = Math.round(
+        startValueRef.current + (end - startValueRef.current) * progress
+      );
+
+      setCount(currentAnimatedValue);
+
+      if (progress < 1) {
+        animationFrameId.current = requestAnimationFrame(animate);
       }
-    }, frameRate);
+    };
 
-    return () => clearInterval(counter);
-  }, [end, duration, totalFrames, frameRate]);
+    // Kick off the animation.
+    animationFrameId.current = requestAnimationFrame(animate);
+
+    // Cleanup function to cancel the animation if the component unmounts
+    // or if the `end` value changes again before this animation finishes.
+    return () => cancelAnimationFrame(animationFrameId.current);
+  }, [end, duration]); // Re-run the effect only when the target 'end' or 'duration' changes.
+
+  // This effect ensures that on the very first render, the count is correctly
+  // set to the initial `end` value, especially when loading from localStorage.
+  useEffect(() => {
+    setCount(end);
+  }, [end]);
 
   return count;
 };
