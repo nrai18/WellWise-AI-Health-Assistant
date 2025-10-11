@@ -20,6 +20,7 @@ import Step5 from './components/About/Step5.jsx';
 import SubmitPage from './components/About/SubmitPage.JSX';
 import ResultPage from "./components/Result/Result.jsx";
 import { DietFormComponent } from "./components/DietFormComponent/DietFormComponent.jsx";
+import WellAI from './components/WellAI/WellAI.jsx';
 import { FormProvider } from './context/FormContext.jsx';
 import { DietProvider } from './components/DietFormComponent/DietFormComponent.jsx';
 
@@ -37,6 +38,7 @@ const router = createBrowserRouter(
       </Route>
       <Route path="/result" element={<ResultPage />} />
       <Route path="diet" element={<DietFormComponent />} />
+      <Route path="WellAI" element={<WellAI />} />
     </Route>
   )
 );

@@ -1,0 +1,157 @@
+/* Full-screen background */
+.chat-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #e9eef3;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Fixed size chat window */
+.chat-box {
+  width: 700px;
+  height: 80vh;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+/* Title */
+.chat-title {
+  text-align: center;
+  color: #0077cc;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* Scrollable message area */
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #f7f8fa;
+  margin-bottom: 14px;
+  scroll-behavior: smooth;
+}
+
+/* Chat bubbles */
+.message {
+  margin: 8px 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  max-width: 80%;
+  word-wrap: break-word;
+  line-height: 1.4;
+  font-size: 15px;
+}
+
+.user {
+  background: #0077cc;
+  color: white;
+  align-self: flex-end;
+}
+
+.bot {
+  background: #e0e0e0;
+  color: #333;
+  align-self: flex-start;
+}
+
+/* Loading text */
+.loading {
+  font-style: italic;
+  color: gray;
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* Input bar */
+.input-section {
+  display: flex;
+  gap: 8px;
+}
+
+.input-section input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.input-section button {
+  padding: 10px 16px;
+  background-color: #0077cc;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.input-section button:hover {
+  background-color: #005fa3;
+}
+
+/* Clear Chat button */
+.clear-btn {
+  background: none;
+  border: none;
+  color: #777;
+  font-size: 14px;
+  margin-top: 8px;
+  cursor: pointer;
+  align-self: center;
+}
+
+.clear-btn:hover {
+  color: #d9534f;
+}
+
+/* Markdown styles */
+.inline-code {
+  background: #eee;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.block-code {
+  background: #2d2d2d;
+  color: #f8f8f2;
+  padding: 10px;
+  border-radius: 6px;
+  overflow-x: auto;
+  display: block;
+  font-family: monospace;
+}
+
+.markdown-link {
+  color: #0077cc;
+  text-decoration: underline;
+}
+
+.markdown-link:hover {
+  color: #005fa3;
+}
+
+/* Scrollbar styling */
+.messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: #bcbcbc;
+  border-radius: 4px;
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
