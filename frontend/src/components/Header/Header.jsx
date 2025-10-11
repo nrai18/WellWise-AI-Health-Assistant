@@ -9,6 +9,7 @@ export default function Header() {
   const navItems = [
     { name: "Home", path: "/" },
     { name: "Well Form", path: "/About" },
+    { name: "Diet", path: "/Diet" },
     { name: "Contact", path: "/Contact" },
     { name: "WellAi", path: "/User" },
   ];

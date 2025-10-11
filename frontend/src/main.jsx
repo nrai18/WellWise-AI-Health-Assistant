@@ -19,7 +19,9 @@ import Step4 from './components/About/Step4.jsx';
 import Step5 from './components/About/Step5.jsx';
 import SubmitPage from './components/About/SubmitPage.JSX';
 import ResultPage from "./components/Result/Result.jsx";
+import { DietFormComponent } from "./components/DietFormComponent/DietFormComponent.jsx";
 import { FormProvider } from './context/FormContext.jsx';
+import { DietProvider } from './components/DietFormComponent/DietFormComponent.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,6 +36,7 @@ const router = createBrowserRouter(
         <Route path="submit" element={<SubmitPage />} />
       </Route>
       <Route path="/result" element={<ResultPage />} />
+      <Route path="diet" element={<DietFormComponent />} />
     </Route>
   )
 );
@@ -41,7 +44,9 @@ const router = createBrowserRouter(
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <FormProvider>
-      <RouterProvider router={router} />
+      <DietProvider>
+        <RouterProvider router={router} />
+      </DietProvider>
     </FormProvider>
   </StrictMode>,
 )

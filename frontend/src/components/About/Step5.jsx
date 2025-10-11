@@ -96,7 +96,7 @@ export default function Step5() {
 
         <div className="group bg-white/80 p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
           <label className="block text-emerald-700 font-semibold mb-1">
-            Stress Score (1–11)
+            Stress Score (1–10)
           </label>
           <input
             type="number"
