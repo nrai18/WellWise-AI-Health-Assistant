@@ -4,6 +4,7 @@ import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github.css";
 import "./WellAI.css";
+import icon from "../../assets/Images/icon.png";
 
 export default function WellAI() {
   const [input, setInput] = useState("");
@@ -24,7 +25,7 @@ export default function WellAI() {
     setLoading(true);
 
     try {
-      const res = await fetch("https://nicholas-unmilitarised-matteo.ngrok-free.dev//chat", {
+      const res = await fetch("https://nicholas-unmilitarised-matteo.ngrok-free.dev/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input }),
@@ -60,11 +61,11 @@ export default function WellAI() {
       <div className="chat-box">
         <div className="chat-header">
           <img
-            src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
+            src={icon}
             alt="bot"
             className="bot-logo"
           />
-          <h1 className="chat-title">WellWise Health Assistant</h1>
+          <h1 className="chat-title">Well AI</h1>
         </div>
 
         <div className="messages">

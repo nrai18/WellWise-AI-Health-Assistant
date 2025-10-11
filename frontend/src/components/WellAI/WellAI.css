@@ -68,10 +68,21 @@
 
 /* Avatar */
 .avatar {
-  width: 32px;
-  height: 32px;
+  width: 40px;       /* controls width */
+  height: 40px;      /* controls height */
   border-radius: 50%;
   margin: 0 8px;
+  object-fit: cover; /* keeps image aspect ratio */
+}
+
+.bot-row .avatar {
+  width: 50px;
+  height: 50px;
+}
+
+.user-row .avatar {
+  width: 36px;
+  height: 36px;
 }
 
 /* Chat bubbles */
