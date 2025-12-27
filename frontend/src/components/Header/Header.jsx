@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-// import icon from "../../assets/Images/icon.png";
+import logo from "../../assets/Images/wellwise_logo.png";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,10 +25,7 @@ export default function Header() {
             to="/"
             className="flex items-center gap-2 transform transition-transform duration-300 hover:scale-105"
           >
-           
-            <span className="text-xl sm:text-2xl font-extrabold bg-gradient-to-r from-green-500 to-lime-500 bg-clip-text text-transparent leading-none">
-              Well Wise
-            </span>
+            <img src={logo} alt="WellWise Logo" className="h-10 w-auto" />
           </Link>
 
           <ul className="hidden lg:flex space-x-6 xl:space-x-10 font-medium">
@@ -98,7 +95,7 @@ export default function Header() {
               ))}
               <li>
                 <Link
-                  to="#"
+                  to="/login"
                   className="block px-5 py-2 text-center text-gray-800 hover:text-green-600 transition"
                 >
                   Log in
@@ -106,7 +103,7 @@ export default function Header() {
               </li>
               <li>
                 <Link
-                  to="#"
+                  to="/signup"
                   className="block px-6 py-2 rounded-full text-center text-white bg-gradient-to-r from-green-500 to-lime-500 transition-all duration-300 hover:shadow-lg hover:scale-105"
                 >
                   Get Started
