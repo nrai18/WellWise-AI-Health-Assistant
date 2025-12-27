@@ -6,6 +6,7 @@ import json
 import logging
 from dotenv import load_dotenv
 import google.generativeai as genai
+import email_utils
 
 # Load environment variables
 load_dotenv()
@@ -78,9 +79,9 @@ def create_diet_prompt(user_inputs, calories):
           {{
             "mealType": "{meal_name}", 
             "options": [
-              {{ "name": "Dish 1", "calories": 300, "protein": 15, "fat": 10, "carbs": 40, "saturatedFat": 3, "sodium": 500, "fiber": 5, "sugar": 6, "imageUrl": "https://placehold.co/600x400", "ingredients": ["Ingredient1", "Ingredient2"], "instructions": ["Step1", "Step2"] }},
-              {{ "name": "Dish 2", "calories": 350, "protein": 20, "fat": 12, "carbs": 45, "saturatedFat": 4, "sodium": 600, "fiber": 6, "sugar": 7, "imageUrl": "https://placehold.co/600x400", "ingredients": ["IngredientA", "IngredientB"], "instructions": ["StepA", "StepB"] }},
-              {{ "name": "Dish 3", "calories": 400, "protein": 18, "fat": 15, "carbs": 50, "saturatedFat": 5, "sodium": 700, "fiber": 7, "sugar": 8, "imageUrl": "https://placehold.co/600x400", "ingredients": ["IngredientX", "IngredientY"], "instructions": ["StepX", "StepY"] }}
+              {{ "name": "Dish 1", "description": "Brief appetizing description", "calories": 300, "protein": 15, "fat": 10, "carbs": 40, "saturatedFat": 3, "sodium": 500, "fiber": 5, "sugar": 6, "ingredients": ["Ingredient1", "Ingredient2"], "instructions": ["Step1", "Step2"] }},
+              {{ "name": "Dish 2", "description": "Brief appetizing description", "calories": 350, "protein": 20, "fat": 12, "carbs": 45, "saturatedFat": 4, "sodium": 600, "fiber": 6, "sugar": 7, "ingredients": ["IngredientA", "IngredientB"], "instructions": ["StepA", "StepB"] }},
+              {{ "name": "Dish 3", "description": "Brief appetizing description", "calories": 400, "protein": 18, "fat": 15, "carbs": 50, "saturatedFat": 5, "sodium": 700, "fiber": 7, "sugar": 8, "ingredients": ["IngredientX", "IngredientY"], "instructions": ["StepX", "StepY"] }}
             ]
           }},
         """
@@ -88,13 +89,16 @@ def create_diet_prompt(user_inputs, calories):
 
     prompt = f"""
     You are an AI that creates Indian diet plans. Total calories: {calories['weightLoss']} kcal.
+    For each meal, provide 3 diverse, authentic Indian dish options with REAL names and descriptions.
+    Make the descriptions appetizing and specific to the dish.
+    DO NOT include imageUrl field - we'll use text descriptions only.
     Provide JSON in this format: {{ "mealPlan": [ {meal_options_prompt} ] }}
     """
     return prompt
 
 def make_gemini_call(prompt):
     try:
-        model = genai.GenerativeModel('gemini-pro-latest')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
         response_text = response.text.strip().replace("```json", "").replace("```", "")
         return json.loads(response_text)
@@ -208,6 +212,103 @@ def get_exercise_plan():
     except Exception as e:
         logging.error(f"Error in get_exercise_plan: {e}", exc_info=True)
         return jsonify({"weeklyPlan": []}), 500
+
+@app.route('/api/signup', methods=['POST'])
+def signup():
+    """User signup endpoint - checks if account exists, creates if not"""
+    try:
+        import sys
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'WellWise-AI-Engine-main'))
+        import database as db
+        import bcrypt
+        
+        data = request.get_json()
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip().lower()
+        password = data.get('password', '')
+        
+        # Validation
+        if not name or len(name) < 2:
+            return jsonify({"status": "error", "message": "Name must be at least 2 characters"}), 400
+        if not email or '@' not in email:
+            return jsonify({"status": "error", "message": "Valid email required"}), 400
+        if not password or len(password) < 6:
+            return jsonify({"status": "error", "message": "Password must be at least 6 characters"}), 400
+        
+        # Check if user exists
+        existing_user = db.get_user_by_email(email)
+        if existing_user:
+            return jsonify({
+                "status": "error",
+                "message": "Account already exists. Please login instead."
+            }), 409
+        
+        # Hash password and create user
+        password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        result = db.save_user(email, name, password_hash)
+        
+        if result.get("status") == "success":
+            return jsonify({
+                "status": "success",
+                "message": "Account created successfully!",
+                "user": {"name": name, "email": email}
+            }), 201
+        else:
+            return jsonify({
+                "status": "error",
+                "message": "Failed to create account"
+            }), 500
+            
+    except Exception as e:
+        logging.error(f"Signup error: {e}", exc_info=True)
+        return jsonify({"status": "error", "message": "Server error"}), 500
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    """User login endpoint - verifies credentials from MongoDB"""
+    try:
+        import sys
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'WellWise-AI-Engine-main'))
+        import database as db
+        import bcrypt
+        
+        data = request.get_json()
+        email = data.get('email', '').strip().lower()
+        password = data.get('password', '')
+        
+        if not email or not password:
+            return jsonify({"status": "error", "message": "Email and password required"}), 400
+        
+        # Check if user exists
+        user = db.get_user_by_email(email)
+        if not user:
+            return jsonify({
+                "status": "error",
+                "message": "No account found. Please sign up first."
+            }), 404
+        
+        # Verify password
+        if not bcrypt.checkpw(password.encode('utf-8'), user["password_hash"].encode('utf-8')):
+            return jsonify({
+                "status": "error",
+                "message": "Incorrect password"
+            }), 401
+        
+        # Update last login
+        db.update_last_login(email)
+        
+        return jsonify({
+            "status": "success",
+            "message": "Login successful!",
+            "user": {
+                "name": user["name"],
+                "email": user["email"]
+            }
+        }), 200
+        
+    except Exception as e:
+        logging.error(f"Login error: {e}", exc_info=True)
+        return jsonify({"status": "error", "message": "Server error"}), 500
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
