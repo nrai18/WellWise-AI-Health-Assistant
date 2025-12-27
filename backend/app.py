@@ -252,6 +252,21 @@ def signup():
         result = db.save_user(email, username_sanitized, password_hash)
         
         if result.get("status") == "success":
+            # Send welcome email
+            try:
+                from datetime import datetime
+                device_info = {
+                    'browser': request.headers.get('User-Agent', 'Unknown')[:50],
+                    'os': 'Windows' if 'Windows' in request.headers.get('User-Agent', '') else 'Other',
+                    'ip': request.remote_addr or 'Unknown',
+                    'location': 'Unknown',
+                    'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    'device_id': request.headers.get('User-Agent', 'Unknown')[-20:]
+                }
+                email_utils.send_signup_notification(email, name, device_info)
+            except Exception as e:
+                logging.error(f"Signup email error: {e}")
+            
             return jsonify({
                 "status": "success",
                 "message": "Account created successfully!",
@@ -300,6 +315,21 @@ def login():
         
         # Update last login
         db.update_last_login(email)
+        
+        # Send login notification email
+        try:
+            from datetime import datetime
+            device_info = {
+                'browser': request.headers.get('User-Agent', 'Unknown')[:50],
+                'os': 'Windows' if 'Windows' in request.headers.get('User-Agent', '') else 'Other',
+                'ip': request.remote_addr or 'Unknown',
+                'location': 'Unknown',
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'device_id': request.headers.get('User-Agent', 'Unknown')[-20:]
+            }
+            email_utils.send_login_notification(email, user["name"], device_info)
+        except Exception as e:
+            logging.error(f"Login email error: {e}")
         
         return jsonify({
             "status": "success",
