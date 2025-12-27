@@ -121,9 +121,6 @@ const NumberInput = ({
 const RecipeCard = ({ recipe }) => {
   if (!recipe) return null;
   
-  const [imageUrl, setImageUrl] = React.useState(null);
-  const [imageError, setImageError] = React.useState(false);
-  
   const getColorForDish = (name) => {
     const colors = [
       'from-rose-400 to-pink-500',
@@ -138,30 +135,6 @@ const RecipeCard = ({ recipe }) => {
     const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return colors[hash % colors.length];
   };
-  
-  React.useEffect(() => {
-    // Use Pexels API for food images (free, works without auth for basic use)
-    const dishSearch = recipe.name.split(' ').slice(0, 2).join(' '); // First 2 words
-    const pexelsUrl = `https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop`;
-    
-    // Try to use food-specific images based on keywords
-    const foodKeywords = {
-      'dosa': '1410236',
-      'rice': '1320684', 
-      'biryani': '2456435',
-      'chicken': '2338407',
-      'paneer': '1099680',
-      'dal': '7625056',
-      'paratha': '5410400',
-      'poha': '5560763',
-      'salad': '1640777'
-    };
-    
-    const keyword = Object.keys(foodKeywords).find(k => recipe.name.toLowerCase().includes(k));
-    const photoId = keyword ? foodKeywords[keyword] : '1640777'; // Default to salad
-    
-    setImageUrl(`https://images.pexels.com/photos/${photoId}/pexels-photo-${photoId}.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop`);
-  }, [recipe.name]);
 
   // Create a neat list of nutritional values to display
   const nutritionalInfo = [
@@ -175,15 +148,11 @@ const RecipeCard = ({ recipe }) => {
 
   return (
     <div className="flex-shrink-0 w-80 bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-      {!imageError && imageUrl ? (
-        <img src={imageUrl} alt={recipe.name} className="w-full h-40 object-cover rounded-lg mb-4" onError={() => setImageError(true)} />
-      ) : (
-        <div className={`w-full h-40 bg-gradient-to-br ${getColorForDish(recipe.name)} rounded-lg mb-4 flex items-center justify-center p-4`}>
-          <h3 className="text-2xl font-bold text-white text-center leading-tight drop-shadow-lg">
-            {recipe.name}
-          </h3>
-        </div>
-      )}
+      <div className={`w-full h-40 bg-gradient-to-br ${getColorForDish(recipe.name)} rounded-lg mb-4 flex items-center justify-center p-4`}>
+        <h3 className="text-2xl font-bold text-white text-center leading-tight drop-shadow-lg">
+          {recipe.name}
+        </h3>
+      </div>
       <h4 className="text-lg font-bold text-gray-800 line-clamp-2 min-h-[3.5rem]">
         {recipe.name}
       </h4>
