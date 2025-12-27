@@ -30,7 +30,7 @@ export default function Footer() {
         </span>
 
         <a
-          href="https://github.com/Raghav-Code-dt/Well-Wise-Healthcare"
+          href="https://github.com/nrai18/WellWise-AI-Health-Assistant"
           className="flex items-center space-x-2 text-green-700 font-semibold text-lg hover:text-green-900 transition duration-150"
           target="_blank"
           rel="noreferrer"
