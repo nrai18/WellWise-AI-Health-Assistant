@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { validateEmail, validatePassword } from "../../utils/validation";
 import "./LoginPage.css";
 
 export default function LoginPage() {
@@ -29,6 +30,17 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    // Validate inputs
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
 
     try {
       const response = await fetch("http://localhost:5000/api/login", {
