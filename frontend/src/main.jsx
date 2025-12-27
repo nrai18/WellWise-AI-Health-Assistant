@@ -29,6 +29,8 @@ import { ExerciseFormComponent, ExerciseProvider } from './components/ExerciseFo
 import LoginPage from './components/LoginPage/Loginpage.jsx';
 import SignupPage from './components/LoginPage/SignupPage.jsx';
 import HydrationTracker from './components/HydrationTracker/HydrationTracker.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -47,10 +49,10 @@ const router = createBrowserRouter(
         <Route path="WellAI" element={<WellAI />} />
         <Route path="exercise" element={<ExerciseFormComponent />} />
         <Route path="/hydration" element={<HydrationTracker />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
       </Route>
 
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
       <Route path="/result" element={<ResultPage />} />
     </>
   )
@@ -58,12 +60,14 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <FormProvider>
-      <DietProvider>
-        <ExerciseProvider>
-          <RouterProvider router={router} />
-        </ExerciseProvider>
-      </DietProvider>
-    </FormProvider>
+    <AuthProvider>
+      <FormProvider>
+        <DietProvider>
+          <ExerciseProvider>
+            <RouterProvider router={router} />
+          </ExerciseProvider>
+        </DietProvider>
+      </FormProvider>
+    </AuthProvider>
   </StrictMode>
 );
