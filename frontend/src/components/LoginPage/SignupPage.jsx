@@ -89,9 +89,12 @@ export default function SignupPage() {
       const data = await response.json();
 
       if (response.ok && data.status === "success") {
-        setSuccess("Signup successful! Redirecting to login...");
+        // Show welcome popup
+        setSuccess(`🎉 Welcome ${data.user.name}! Your account has been created successfully!`);
         setError("");
-        setTimeout(() => navigate("/login"), 2000);
+        
+        // Redirect to home page after 2 seconds
+        setTimeout(() => navigate("/"), 2000);
       } else {
         setError(data.message || "Signup failed");
       }
