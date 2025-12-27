@@ -129,12 +129,24 @@ const RecipeCard = ({ recipe }) => {
       'from-orange-400 to-amber-500', 
       'from-emerald-400 to-teal-500',
       'from-blue-400 to-indigo-500',
-      'from-purple-400 to-pink-500',
+      'from-purple-400 to-fuchsia-500',
       'from-lime-400 to-green-500',
-      'from-cyan-400 to-blue-500',
-      'from-fuchsia-400 to-purple-500'
+      'from-cyan-400 to-sky-500',
+      'from-violet-400 to-purple-500',
+      'from-red-400 to-rose-500',
+      'from-yellow-400 to-orange-500',
+      'from-teal-400 to-cyan-500',
+      'from-indigo-400 to-blue-500'
     ];
-    const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    
+    // Better hash function for more variation
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = ((hash << 5) - hash) + name.charCodeAt(i);
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    hash = Math.abs(hash);
+    
     return colors[hash % colors.length];
   };
 
