@@ -1,0 +1,22 @@
+{
+  "Age": 25,
+  "Height": 170,
+  "Weight": 70,
+  "BMI": 24.2,
+  "Gender": "Male",
+  "State": "Delhi",
+  "Smoking": "Never",
+  "Alcohol": "Never",
+  "Diet Quality": "High",
+  "Exercise Type": "HIIT",
+  "Sleep Duration": 7,
+  "Daily Activity": 8000,
+  "Stress Score": 3,
+  "Resting Heart Rate": 70,
+  "SpO2": 98,
+  "Blood Pressure": "120/80",
+  "Air Quality Index": 150,
+  "Work Hours": 8,
+  "Family History": ["Diabetes"],
+  "Existing Conditions": []
+}
