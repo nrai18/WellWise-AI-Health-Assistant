@@ -120,6 +120,31 @@ const NumberInput = ({
 // --- NEW: RECIPE CARD COMPONENT ---
 const RecipeCard = ({ recipe }) => {
   if (!recipe) return null;
+  
+  const [imageUrl, setImageUrl] = React.useState(null);
+  const [imageError, setImageError] = React.useState(false);
+  
+  const getColorForDish = (name) => {
+    const colors = [
+      'from-rose-400 to-pink-500',
+      'from-orange-400 to-amber-500', 
+      'from-emerald-400 to-teal-500',
+      'from-blue-400 to-indigo-500',
+      'from-purple-400 to-pink-500',
+      'from-lime-400 to-green-500',
+      'from-cyan-400 to-blue-500',
+      'from-fuchsia-400 to-purple-500'
+    ];
+    const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return colors[hash % colors.length];
+  };
+  
+  React.useEffect(() => {
+    // Use Unsplash API for food images (free, no auth needed for basic use)
+    const dishSearch = recipe.name.split(' ').slice(0, 3).join(' '); // First 3 words
+    const unsplashUrl = `https://source.unsplash.com/400x300/?food,${encodeURIComponent(dishSearch)}`;
+    setImageUrl(unsplashUrl);
+  }, [recipe.name]);
 
   // Create a neat list of nutritional values to display
   const nutritionalInfo = [
@@ -133,17 +158,16 @@ const RecipeCard = ({ recipe }) => {
 
   return (
     <div className="flex-shrink-0 w-80 bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-      <img
-        src={recipe.imageUrl}
-        alt={recipe.name}
-        className="w-full h-40 object-cover rounded-lg mb-4"
-        onError={(e) => {
-          e.target.onerror = null;
-          e.target.src =
-            "https://placehold.co/600x400/e2e8f0/94a3b8?text=Image+Not+Found";
-        }}
-      />
-      <h4 className="text-lg font-bold text-gray-800 truncate">
+      {!imageError && imageUrl ? (
+        <img src={imageUrl} alt={recipe.name} className="w-full h-40 object-cover rounded-lg mb-4" onError={() => setImageError(true)} />
+      ) : (
+        <div className={`w-full h-40 bg-gradient-to-br ${getColorForDish(recipe.name)} rounded-lg mb-4 flex items-center justify-center p-4`}>
+          <h3 className="text-2xl font-bold text-white text-center leading-tight drop-shadow-lg">
+            {recipe.name}
+          </h3>
+        </div>
+      )}
+      <h4 className="text-lg font-bold text-gray-800 line-clamp-2 min-h-[3.5rem]">
         {recipe.name}
       </h4>
 
