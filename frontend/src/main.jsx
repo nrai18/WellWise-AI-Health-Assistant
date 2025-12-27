@@ -30,6 +30,7 @@ import LoginPage from './components/LoginPage/Loginpage.jsx';
 import SignupPage from './components/LoginPage/SignupPage.jsx';
 import HydrationTracker from './components/HydrationTracker/HydrationTracker.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
+import { Navigate } from 'react-router-dom';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,6 +38,7 @@ const router = createBrowserRouter(
       {/* Main application routes with the standard layout */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="dashboard" element={<Navigate to="/" replace />} />
         <Route path="About" element={<About />}>
           <Route path="step1" element={<Step1 />} />
           <Route path="step2" element={<Step2 />} />
