@@ -1,9 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from dotenv import load_dotenv
 import os
 import json
 import google.generativeai as genai
 
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
@@ -11,7 +14,9 @@ CORS(app)
 
 USER_DATA_FILE = "user_data.txt"
 
-GEMINI_API_KEY = "AIzaSyBuNG6GQFZq5D1ZmUNkp5E_nTUrJqBwoXM"
+GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY")
+if not GEMINI_API_KEY:
+    raise ValueError("GOOGLE_API_KEY not found in environment variables")
 genai.configure(api_key=GEMINI_API_KEY)
 
 @app.route("/chat", methods=["POST"])
