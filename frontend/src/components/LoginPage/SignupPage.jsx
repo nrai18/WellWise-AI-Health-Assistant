@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { validateEmail, validatePassword } from "../../utils/validation";
 import "./SignupPage.css";
 
 export default function SignupPage() {
@@ -8,9 +9,36 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState(0);
   const navigate = useNavigate();
   const cardRef = useRef(null);
   const dotsRef = useRef(null);
+
+  const calculatePasswordStrength = (pwd) => {
+    let strength = 0;
+    if (pwd.length >= 6) strength++;
+    if (pwd.length >= 10) strength++;
+    if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) strength++;
+    if (/\d/.test(pwd)) strength++;
+    if (/[^a-zA-Z\d]/.test(pwd)) strength++;
+    return strength;
+  };
+
+  const getStrengthColor = () => {
+    if (passwordStrength === 0) return 'bg-gray-200';
+    if (passwordStrength <= 2) return 'bg-red-500';
+    if (passwordStrength <= 3) return 'bg-yellow-500';
+    if (passwordStrength <= 4) return 'bg-blue-500';
+    return 'bg-green-500';
+  };
+
+  const getStrengthText = () => {
+    if (passwordStrength === 0) return 'Enter password';
+    if (passwordStrength <= 2) return 'Weak';
+    if (passwordStrength <= 3) return 'Fair';
+    if (passwordStrength <= 4) return 'Good';
+    return 'Strong';
+  };
 
   const handleMouseMove = (e) => {
     const card = cardRef.current;
@@ -32,6 +60,24 @@ export default function SignupPage() {
     e.preventDefault();
     setError("");
     setSuccess("");
+
+    // Validate inputs
+    if (!name || name.trim().length < 2) {
+      setError("Name must be at least 2 characters");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setError(
+
+"Password must be at least 6 characters");
+      return;
+    }
 
     try {
       const response = await fetch("http://localhost:5000/api/signup", {
@@ -128,10 +174,39 @@ export default function SignupPage() {
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setPasswordStrength(calculatePasswordStrength(e.target.value));
+            }}
             required
             className="input-field"
           />
+          
+          {/* Password Strength Indicator */}
+          {password && (
+            <div style={{marginTop: '10px'}}>
+              <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px'}}>
+                <div style={{flex: 1, height: '6px', backgroundColor: '#e5e7eb', borderRadius: '10px', overflow: 'hidden'}}>
+                  <div 
+                    className={getStrengthColor()}
+                    style={{
+                      height: '100%',
+                      width: `${(passwordStrength / 5) * 100}%`,
+                      transition: 'all 0.3s ease'
+                    }}
+                  ></div>
+                </div>
+                <span style={{fontSize: '13px', fontWeight: 600, color: passwordStrength <= 2 ? '#dc2626' : passwordStrength <= 3 ? '#ca8a04' : passwordStrength <= 4 ? '#2563eb' : '#16a34a'}}>
+                  {getStrengthText()}
+                </span>
+              </div>
+              <div style={{fontSize: '11px', color: '#4b5563'}}>
+                <p style={{color: password.length >= 6 ? '#16a34a' : '#6b7280', marginBottom: '3px'}}>✓ At least 6 characters</p>
+                <p style={{color: /[a-z]/.test(password) && /[A-Z]/.test(password) ? '#16a34a' : '#6b7280', marginBottom: '3px'}}>✓ Upper & lowercase</p>
+                <p style={{color: /\d/.test(password) ? '#16a34a' : '#6b7280'}}>✓ Contains number</p>
+              </div>
+            </div>
+          )}
 
           <button type="submit" className="signup-btn">
             Sign Up
