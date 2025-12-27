@@ -140,10 +140,27 @@ const RecipeCard = ({ recipe }) => {
   };
   
   React.useEffect(() => {
-    // Use Unsplash API for food images (free, no auth needed for basic use)
-    const dishSearch = recipe.name.split(' ').slice(0, 3).join(' '); // First 3 words
-    const unsplashUrl = `https://source.unsplash.com/400x300/?food,${encodeURIComponent(dishSearch)}`;
-    setImageUrl(unsplashUrl);
+    // Use Pexels API for food images (free, works without auth for basic use)
+    const dishSearch = recipe.name.split(' ').slice(0, 2).join(' '); // First 2 words
+    const pexelsUrl = `https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop`;
+    
+    // Try to use food-specific images based on keywords
+    const foodKeywords = {
+      'dosa': '1410236',
+      'rice': '1320684', 
+      'biryani': '2456435',
+      'chicken': '2338407',
+      'paneer': '1099680',
+      'dal': '7625056',
+      'paratha': '5410400',
+      'poha': '5560763',
+      'salad': '1640777'
+    };
+    
+    const keyword = Object.keys(foodKeywords).find(k => recipe.name.toLowerCase().includes(k));
+    const photoId = keyword ? foodKeywords[keyword] : '1640777'; // Default to salad
+    
+    setImageUrl(`https://images.pexels.com/photos/${photoId}/pexels-photo-${photoId}.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop`);
   }, [recipe.name]);
 
   // Create a neat list of nutritional values to display
