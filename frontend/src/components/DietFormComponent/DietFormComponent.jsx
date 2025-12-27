@@ -121,6 +121,8 @@ const NumberInput = ({
 const RecipeCard = ({ recipe }) => {
   if (!recipe) return null;
   
+  const [isFlipped, setIsFlipped] = React.useState(false);
+  
   const getColorForDish = (name) => {
     const colors = [
       'from-rose-400 to-pink-500',
@@ -136,6 +138,11 @@ const RecipeCard = ({ recipe }) => {
     return colors[hash % colors.length];
   };
 
+  const getYoutubeSearchUrl = (dishName) => {
+    const searchQuery = encodeURIComponent(`${dishName} recipe indian cooking`);
+    return `https://www.youtube.com/results?search_query=${searchQuery}`;
+  };
+
   // Create a neat list of nutritional values to display
   const nutritionalInfo = [
     { label: "Calories", value: recipe.calories },
@@ -147,56 +154,106 @@ const RecipeCard = ({ recipe }) => {
   ];
 
   return (
-    <div className="flex-shrink-0 w-80 bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-      <div className={`w-full h-40 bg-gradient-to-br ${getColorForDish(recipe.name)} rounded-lg mb-4 flex items-center justify-center p-4`}>
-        <h3 className="text-2xl font-bold text-white text-center leading-tight drop-shadow-lg">
-          {recipe.name}
-        </h3>
-      </div>
-      <h4 className="text-lg font-bold text-gray-800 line-clamp-2 min-h-[3.5rem]">
-        {recipe.name}
-      </h4>
-
-      <div className="my-3">
-        <h5 className="font-semibold text-emerald-700 text-sm mb-1">
-          Nutritional Values
-        </h5>
-        <div className="grid grid-cols-3 gap-2 text-xs">
-          {nutritionalInfo.map((item) => (
-            <div
-              key={item.label}
-              className="bg-gray-100 p-1 rounded text-center"
-            >
-              <span className="font-medium text-gray-600 block">
-                {item.label}
-              </span>
-              <span className="font-bold text-gray-800">
-                {item.value || "N/A"}
-              </span>
+    <div 
+      className="flex-shrink-0 w-80 h-[520px]"
+      style={{ perspective: '1000px' }}
+      onMouseEnter={() => setIsFlipped(true)}
+      onMouseLeave={() => setIsFlipped(false)}
+    >
+      <div 
+        className={`relative w-full h-full transition-transform duration-700`}
+        style={{ 
+          transformStyle: 'preserve-3d',
+          transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+        }}
+      >
+        {/* Front of card */}
+        <div 
+          className="absolute w-full h-full bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-gray-100 shadow-sm"
+          style={{ backfaceVisibility: 'hidden' }}
+        >
+          <div className={`relative w-full h-40 bg-gradient-to-br ${getColorForDish(recipe.name)} rounded-lg mb-4 flex items-center justify-center p-4`}>
+            <h3 className="text-2xl font-bold text-white text-center leading-tight drop-shadow-lg">
+              {recipe.name}
+            </h3>
+            {/* Watch icon */}
+            <div className="absolute top-2 right-2 bg-white/90 rounded-full p-2 shadow-lg animate-pulse">
+              <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+              </svg>
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+          <h4 className="text-lg font-bold text-gray-800 line-clamp-2 min-h-[3.5rem]">
+            {recipe.name}
+          </h4>
 
-      <div className="my-3">
-        <h5 className="font-semibold text-emerald-700 text-sm mb-1">
-          Ingredients
-        </h5>
-        <ul className="text-sm text-gray-600 list-disc list-inside max-h-24 overflow-y-auto">
-          {recipe.ingredients?.map((ing, i) => (
-            <li key={i}>{ing}</li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <h5 className="font-semibold text-emerald-700 text-sm mb-1">
-          Instructions
-        </h5>
-        <ol className="text-sm text-gray-600 list-decimal list-inside max-h-28 overflow-y-auto">
-          {recipe.instructions?.map((inst, i) => (
-            <li key={i}>{inst}</li>
-          ))}
-        </ol>
+          <div className="my-3">
+            <h5 className="font-semibold text-emerald-700 text-sm mb-1">
+              Nutritional Values
+            </h5>
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              {nutritionalInfo.map((item) => (
+                <div
+                  key={item.label}
+                  className="bg-gray-100 p-1 rounded text-center"
+                >
+                  <span className="font-medium text-gray-600 block">
+                    {item.label}
+                  </span>
+                  <span className="font-bold text-gray-800">
+                    {item.value || "N/A"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="my-3">
+            <h5 className="font-semibold text-emerald-700 text-sm mb-1">
+              Ingredients
+            </h5>
+            <ul className="text-sm text-gray-600 list-disc list-inside max-h-24 overflow-y-auto">
+              {recipe.ingredients?.map((ing, i) => (
+                <li key={i}>{ing}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h5 className="font-semibold text-emerald-700 text-sm mb-1">
+              Instructions
+            </h5>
+            <ol className="text-sm text-gray-600 list-decimal list-inside max-h-28 overflow-y-auto">
+              {recipe.instructions?.map((inst, i) => (
+                <li key={i}>{inst}</li>
+              ))}
+            </ol>
+          </div>
+        </div>
+
+        {/* Back of card - YouTube Recipe */}
+        <div 
+          className={`absolute w-full h-full bg-gradient-to-br ${getColorForDish(recipe.name)} p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center justify-center`}
+          style={{ 
+            backfaceVisibility: 'hidden',
+            transform: 'rotateY(180deg)'
+          }}
+        >
+          <div className="text-center text-white">
+            <svg className="w-20 h-20 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+            </svg>
+            <h3 className="text-2xl font-bold mb-3 drop-shadow-lg">Watch Recipe</h3>
+            <p className="text-lg mb-6 font-semibold">{recipe.name}</p>
+            <a
+              href={getYoutubeSearchUrl(recipe.name)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-white text-gray-800 px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg"
+            >
+              Find Recipe on YouTube →
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
