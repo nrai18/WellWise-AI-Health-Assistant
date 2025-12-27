@@ -235,6 +235,9 @@ def signup():
         if not password or len(password) < 6:
             return jsonify({"status": "error", "message": "Password must be at least 6 characters"}), 400
         
+        # Sanitize username - replace spaces with underscores
+        username_sanitized = name.replace(' ', '_')
+        
         # Check if user exists
         existing_user = db.get_user_by_email(email)
         if existing_user:
@@ -245,7 +248,8 @@ def signup():
         
         # Hash password and create user
         password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-        result = db.save_user(email, name, password_hash)
+        # Save with sanitized username but return original name
+        result = db.save_user(email, username_sanitized, password_hash)
         
         if result.get("status") == "success":
             return jsonify({
