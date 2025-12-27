@@ -6,6 +6,7 @@ import joblib
 import os
 from datetime import datetime
 import json
+import database
 
 
 USER_DATA_FILE = "user_data.txt"
@@ -61,9 +62,24 @@ def generate_recommendations(data, family_histories, existing_conditions):
 
     return sorted(recommendations, key=lambda x: x.get('potential_gain', 0), reverse=True)
 
+# Initialize database
+database.init_database()
+
 @app.route('/')
 def home():
     return jsonify({"status": "success", "message": "Life Expectancy Prediction API is running."})
+
+@app.route('/history', methods=['GET'])
+def get_history():
+    """Get prediction history for a user."""
+    user_email = request.args.get('email', 'guest@wellwise.com')
+    limit = int(request.args.get('limit', 10))
+    
+    try:
+        predictions = database.get_user_predictions(user_email, limit)
+        return jsonify({"status": "success", "predictions": predictions})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -177,6 +193,13 @@ def predict():
             },
             "summary": summary, "recommendations": recommendations, "status": "success"
         }
+        
+        # Save prediction to database
+        try:
+            user_email = form_data.get('email', 'guest@wellwise.com')
+            database.save_prediction(user_email, form_data, response_data)
+        except Exception as db_error:
+            print(f"Database save error: {db_error}")
 
         return jsonify(response_data)
 
